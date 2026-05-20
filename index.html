@@ -411,6 +411,7 @@
       </div>
 
       <div id="scanMessage" class="mt-3 text-sm font-bold"></div>
+      <div id="debugInfo" class="mt-2 text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded-xl p-3 hidden"></div>
     </section>
 
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
@@ -635,17 +636,51 @@
     }
 
     function replaceFacilities(newFacilities, message = '') {
-      facilities = Array.isArray(newFacilities) ? [...newFacilities] : [];
+      facilities = Array.isArray(newFacilities) ? newFacilities.map(item => ({ ...item })) : [];
       $('searchInput').value = '';
       $('statusFilter').value = 'all';
-      renderTable();
+      localStorage.removeItem(STORAGE_KEY);
       saveLocal(true);
+      renderTable();
       updateStats();
+      showDebugInfo('replaceFacilities', {
+        newFacilitiesLength: Array.isArray(newFacilities) ? newFacilities.length : 0,
+        facilitiesLength: facilities.length,
+        storageLength: getStoredFacilitiesLength(),
+        renderedRows: document.querySelectorAll('#facilityBody tr').length,
+        filter: $('statusFilter').value,
+        keyword: $('searchInput').value
+      });
       if (message) showScanMessage(message, 'text-blue-700');
     }
 
+    function getStoredFacilitiesLength() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return 0;
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed.facilities) ? parsed.facilities.length : 0;
+      } catch (e) {
+        return -1;
+      }
+    }
+
+    function showDebugInfo(title, info) {
+      const box = $('debugInfo');
+      if (!box) return;
+      box.classList.remove('hidden');
+      box.innerHTML = `
+        <div class="font-black text-slate-800 mb-1">업로드 진단 정보: ${escapeHtml(title)}</div>
+        <div>읽은 데이터: <b>${escapeHtml(info.newFacilitiesLength ?? '-')}</b>건</div>
+        <div>현재 화면 데이터 배열: <b>${escapeHtml(info.facilitiesLength ?? '-')}</b>건</div>
+        <div>브라우저 저장 데이터: <b>${escapeHtml(info.storageLength ?? '-')}</b>건</div>
+        <div>표 렌더링 행 수: <b>${escapeHtml(info.renderedRows ?? '-')}</b>행</div>
+        <div>검색어: <b>${escapeHtml(info.keyword || '없음')}</b> / 필터: <b>${escapeHtml(info.filter || '없음')}</b></div>
+      `;
+    }
+
     function updateStats() {
-      const total = facilities.length;
+      const total = Array.isArray(facilities) ? facilities.length : 0;
       const done = facilities.filter(x => x.checked).length;
       const remain = total - done;
       const rate = total ? Math.round((done / total) * 100) : 0;
@@ -946,7 +981,12 @@
       if (!confirm('모든 설비 및 조사 데이터를 삭제하시겠습니까?')) return;
       facilities = [];
       localStorage.removeItem(STORAGE_KEY);
+      $('searchInput').value = '';
+      $('statusFilter').value = 'all';
+      const debugBox = $('debugInfo');
+      if (debugBox) debugBox.classList.add('hidden');
       renderTable();
+      updateStats();
       showScanMessage('데이터가 초기화되었습니다.', 'text-slate-700');
     }
 
