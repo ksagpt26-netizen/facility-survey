@@ -516,18 +516,36 @@
 
       if (!nonEmptyRows.length) return [];
 
-      const headerIndex = nonEmptyRows.findIndex(row =>
-        row.some(cell => ['설비명', '장비명', '자산명', '설비코드', '설비번호', '바코드', '자산번호'].some(key =>
-          normalizeHeader(cell).includes(normalizeHeader(key))
-        ))
-      );
+      const headerKeywords = [
+        '설비명', '장비명', '자산명', '품명', '설비코드', '설비번호', '바코드', '자산번호',
+        '위치', '설치위치', '부서', '담당부서', '관리자', '담당자', '비고',
+        'name', 'code', 'barcode', 'asset', 'facility', 'equipment', 'location', 'department'
+      ];
 
-      const headers = (headerIndex >= 0 ? nonEmptyRows[headerIndex] : nonEmptyRows[0]).map((cell, index) => {
+      let headerIndex = 0;
+      let bestScore = -1;
+
+      nonEmptyRows.forEach((row, rowIndex) => {
+        const score = row.reduce((sum, cell) => {
+          const normalized = normalizeHeader(cell);
+          if (!normalized) return sum;
+          return sum + headerKeywords.filter(key => normalized.includes(normalizeHeader(key))).length;
+        }, 0);
+
+        if (score > bestScore) {
+          bestScore = score;
+          headerIndex = rowIndex;
+        }
+      });
+
+      // 헤더 키워드를 찾지 못해도 첫 번째 행을 헤더로 사용합니다.
+      const headerRow = nonEmptyRows[headerIndex] || nonEmptyRows[0];
+      const headers = headerRow.map((cell, index) => {
         const text = String(cell ?? '').trim();
         return text || `컬럼${index + 1}`;
       });
 
-      const dataStartIndex = headerIndex >= 0 ? headerIndex + 1 : 1;
+      const dataStartIndex = headerIndex + 1;
       const dataRows = nonEmptyRows.slice(dataStartIndex);
 
       return dataRows
@@ -539,6 +557,20 @@
           return obj;
         })
         .filter(row => Object.values(row).some(value => String(value ?? '').trim() !== ''));
+    }
+
+    function parseWorkbookRows(workbook) {
+      const candidates = workbook.SheetNames.map(sheetName => {
+        const sheet = workbook.Sheets[sheetName];
+        const rows = parseExcelRows(sheet);
+        return { sheetName, rows };
+      }).filter(candidate => candidate.rows.length > 0);
+
+      if (!candidates.length) return { sheetName: '', rows: [] };
+
+      // 여러 시트가 있는 경우 데이터 행이 가장 많은 시트를 자동 선택합니다.
+      candidates.sort((a, b) => b.rows.length - a.rows.length);
+      return candidates[0];
     }
 
     function makeBarcode(index, code) {
@@ -676,8 +708,8 @@
       try {
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: 'array', cellDates: true });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = parseExcelRows(sheet);
+        const parsed = parseWorkbookRows(workbook);
+        const rows = parsed.rows;
 
         if (!rows.length) {
           showScanMessage('엑셀에서 등록 가능한 데이터 행을 찾지 못했습니다. 첫 행에 설비명, 설비코드 등의 제목이 있는지 확인해 주세요.', 'text-red-700');
@@ -685,9 +717,11 @@
         }
 
         facilities = rows.map(buildFacility);
+        $('searchInput').value = '';
+        $('statusFilter').value = 'all';
         renderTable();
         saveLocal(true);
-        showScanMessage(`${facilities.length}건의 설비 리스트가 모두 등록되었습니다.`, 'text-blue-700');
+        showScanMessage(`${parsed.sheetName} 시트에서 ${facilities.length}건의 설비 리스트가 모두 등록되었습니다.`, 'text-blue-700');
       } catch (error) {
         console.error(error);
         showScanMessage('엑셀 파일을 읽지 못했습니다. 파일이 손상되었거나 지원하지 않는 형식일 수 있습니다.', 'text-red-700');
