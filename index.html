@@ -636,15 +636,30 @@
     }
 
     function replaceFacilities(newFacilities, message = '') {
-      facilities = Array.isArray(newFacilities) ? newFacilities.map(item => ({ ...item })) : [];
+      const cleanList = Array.isArray(newFacilities) ? newFacilities.map((item, index) => ({
+        id: item.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random() + index)),
+        barcode: String(item.barcode || makeBarcode(index, '')).trim(),
+        name: String(item.name || `설비 ${index + 1}`).trim(),
+        location: String(item.location || '').trim(),
+        department: String(item.department || '').trim(),
+        manager: String(item.manager || '').trim(),
+        note: String(item.note || '').trim(),
+        checked: Boolean(item.checked),
+        checkedAt: item.checkedAt || ''
+      })) : [];
+
+      facilities.length = 0;
+      cleanList.forEach(item => facilities.push(item));
+
       $('searchInput').value = '';
       $('statusFilter').value = 'all';
       localStorage.removeItem(STORAGE_KEY);
-      saveLocal(true);
-      renderTable();
-      updateStats();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
+
+      forceRefreshAll();
+
       showDebugInfo('replaceFacilities', {
-        newFacilitiesLength: Array.isArray(newFacilities) ? newFacilities.length : 0,
+        newFacilitiesLength: cleanList.length,
         facilitiesLength: facilities.length,
         storageLength: getStoredFacilitiesLength(),
         renderedRows: document.querySelectorAll('#facilityBody tr').length,
@@ -685,11 +700,20 @@
       const remain = total - done;
       const rate = total ? Math.round((done / total) * 100) : 0;
 
-      ['statTotal', 'summaryTotal'].forEach(id => $(id).textContent = total);
-      ['statDone', 'summaryDone'].forEach(id => $(id).textContent = done);
-      ['statRemain', 'summaryRemain'].forEach(id => $(id).textContent = remain);
-      ['statRate', 'summaryRate'].forEach(id => $(id).textContent = rate + '%');
-      $('progressBar').style.width = rate + '%';
+      ['statTotal', 'summaryTotal'].forEach(id => { if ($(id)) $(id).textContent = total; });
+      ['statDone', 'summaryDone'].forEach(id => { if ($(id)) $(id).textContent = done; });
+      ['statRemain', 'summaryRemain'].forEach(id => { if ($(id)) $(id).textContent = remain; });
+      ['statRate', 'summaryRate'].forEach(id => { if ($(id)) $(id).textContent = rate + '%'; });
+      if ($('progressBar')) $('progressBar').style.width = rate + '%';
+    }
+
+    function forceRefreshAll() {
+      renderTable();
+      updateStats();
+      setTimeout(() => {
+        renderTable();
+        updateStats();
+      }, 50);
     }
 
     function escapeHtml(value) {
@@ -714,6 +738,45 @@
       };
     }
 
+    function buildFacilityFromArray(row, index) {
+      return {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+        barcode: makeBarcode(index, row[0]),
+        name: String(row[1] || `설비 ${index + 1}`).trim(),
+        location: String(row[2] || '').trim(),
+        department: String(row[3] || '').trim(),
+        manager: String(row[4] || '').trim(),
+        note: String(row[5] || '').trim(),
+        checked: false,
+        checkedAt: ''
+      };
+    }
+
+    function parseStandardFacilitySheet(sheet) {
+      const matrix = XLSX.utils.sheet_to_json(sheet, {
+        header: 1,
+        defval: '',
+        blankrows: false,
+        raw: false
+      });
+
+      const nonEmptyRows = matrix.filter(row =>
+        Array.isArray(row) && row.some(cell => String(cell ?? '').trim() !== '')
+      );
+
+      const headerIndex = nonEmptyRows.findIndex(row =>
+        normalizeHeader(row[0]).includes('설비코드') &&
+        normalizeHeader(row[1]).includes('설비명')
+      );
+
+      if (headerIndex < 0) return [];
+
+      return nonEmptyRows
+        .slice(headerIndex + 1)
+        .filter(row => String(row[0] || '').trim() || String(row[1] || '').trim())
+        .map(buildFacilityFromArray);
+    }
+
     $('excelFile').addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) {
@@ -731,17 +794,31 @@
       try {
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: 'array', cellDates: true });
-        const parsed = parseWorkbookRows(workbook);
-        const rows = parsed.rows;
+        let selectedSheetName = workbook.SheetNames[0];
+        let directFacilities = [];
 
-        if (!rows.length) {
-          showScanMessage('엑셀에서 등록 가능한 데이터 행을 찾지 못했습니다. 첫 행에 설비명, 설비코드 등의 제목이 있는지 확인해 주세요.', 'text-red-700');
+        for (const sheetName of workbook.SheetNames) {
+          const candidate = parseStandardFacilitySheet(workbook.Sheets[sheetName]);
+          if (candidate.length > directFacilities.length) {
+            directFacilities = candidate;
+            selectedSheetName = sheetName;
+          }
+        }
+
+        if (!directFacilities.length) {
+          const parsed = parseWorkbookRows(workbook);
+          selectedSheetName = parsed.sheetName;
+          directFacilities = parsed.rows.map(buildFacility);
+        }
+
+        if (!directFacilities.length) {
+          showScanMessage('엑셀에서 등록 가능한 데이터 행을 찾지 못했습니다. 첫 행에 설비코드, 설비명 제목이 있는지 확인해 주세요.', 'text-red-700');
           return;
         }
 
         replaceFacilities(
-          rows.map(buildFacility),
-          `${parsed.sheetName} 시트에서 ${rows.length}건의 설비 리스트가 모두 등록되었습니다.`
+          directFacilities,
+          `${selectedSheetName} 시트에서 ${directFacilities.length}건의 설비 리스트가 모두 등록되었습니다.`
         );
       } catch (error) {
         console.error(error);
