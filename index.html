@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>설비 조사 양식</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -357,6 +360,9 @@
             설비 바코드 기반 재고조사 관리
           </div>
           <h1 class="text-3xl sm:text-4xl font-black tracking-tight">설비 조사 양식</h1>
+          <p class="mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-blue-50">
+            <i class="fa-solid fa-code-branch"></i> 모바일 표시 개선 버전 v2026.01.31
+          </p>
           <p class="mt-3 text-blue-50 leading-relaxed max-w-2xl">
             엑셀로 설비 리스트를 등록하고, 설비별 바코드를 스캔하여 재고조사 여부를 자동 체크하는 업무용 양식입니다.
           </p>
@@ -524,7 +530,7 @@
   </main>
 
   <script>
-    const STORAGE_KEY = 'facilityInventorySurvey.v1';
+    const STORAGE_KEY = 'facilityInventorySurvey.v20260131';
     let facilities = [];
     let html5QrCode = null;
     let scannerRunning = false;
