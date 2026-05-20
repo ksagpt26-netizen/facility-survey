@@ -14,376 +14,112 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
-    :root {
-      --theme: #2563eb;
-      --theme-dark: #1e40af;
-      --soft-bg: #eff6ff;
-      --border: #dbeafe;
-      --text: #1f2937;
-    }
-
+    :root { --theme: #2563eb; --border: #dbeafe; --text: #1f2937; }
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
       color: var(--text);
-      background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 42%, #ffffff 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 45%, #fff 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-
     .material-section {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255,255,255,.96);
       border: 1px solid var(--border);
       border-radius: 1.25rem;
-      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.08);
+      box-shadow: 0 16px 40px rgba(37,99,235,.08);
       padding: 1.25rem;
     }
-
     .section-heading {
       display: flex;
       align-items: center;
-      gap: 0.55rem;
-      font-weight: 800;
-      font-size: 1.08rem;
+      gap: .55rem;
+      font-weight: 900;
+      font-size: 1.1rem;
       color: #1e3a8a;
       margin-bottom: 1rem;
-      letter-spacing: -0.02em;
+      letter-spacing: -.03em;
     }
-
     .input-field {
       width: 100%;
       border: 1px solid #cbd5e1;
-      border-radius: 0.8rem;
-      padding: 0.72rem 0.9rem;
+      border-radius: .9rem;
+      padding: .78rem .95rem;
       outline: none;
-      background: white;
-      transition: all 0.2s ease;
+      background: #fff;
+      transition: .2s;
     }
-
-    .input-field:focus {
-      border-color: var(--theme);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
+    .input-field:focus { border-color: var(--theme); box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.45rem;
-      border-radius: 0.85rem;
-      padding: 0.72rem 1rem;
-      font-weight: 700;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+      gap: .45rem;
+      border-radius: .9rem;
+      padding: .78rem 1rem;
+      font-weight: 900;
+      transition: .12s;
       white-space: nowrap;
+      border: 0;
+      cursor: pointer;
     }
-
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12); }
-    .btn:active { transform: translateY(0); }
-
-    .btn-primary { background: var(--theme); color: white; }
-    .btn-dark { background: #111827; color: white; }
-    .btn-soft { background: #e0ecff; color: #1d4ed8; }
-    .btn-danger { background: #fee2e2; color: #b91c1c; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-dark { background: #111827; color: #fff; }
+    .btn-soft { background: #dbeafe; color: #1d4ed8; }
     .btn-success { background: #dcfce7; color: #15803d; }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      border-radius: 999px;
-      padding: 0.28rem 0.6rem;
-      font-size: 0.78rem;
-      font-weight: 800;
-    }
-
+    .btn-danger { background: #fee2e2; color: #b91c1c; }
+    .badge { display: inline-flex; align-items: center; gap: .3rem; border-radius: 999px; padding: .3rem .65rem; font-size: .78rem; font-weight: 900; }
     .badge-done { background: #dcfce7; color: #166534; }
     .badge-wait { background: #fef3c7; color: #92400e; }
-    .badge-missing { background: #fee2e2; color: #991b1b; }
-
-    .table-wrap {
-      overflow-x: auto;
-      border-radius: 1rem;
-      border: 1px solid #e2e8f0;
-      -webkit-overflow-scrolling: touch;
-      background: white;
-    }
-
-    .mobile-card-list { display: none; }
-
-    #facilityTable {
-      min-width: 980px;
-      border-collapse: separate;
-      border-spacing: 0;
-      table-layout: auto;
-    }
-
-    #facilityTable th,
-    #facilityTable td {
-      white-space: nowrap;
-      word-break: keep-all;
-    }
-
-    #facilityTable th:nth-child(1),
-    #facilityTable td:nth-child(1) { min-width: 54px; }
-    #facilityTable th:nth-child(2),
-    #facilityTable td:nth-child(2) { min-width: 150px; }
-    #facilityTable th:nth-child(3),
-    #facilityTable td:nth-child(3) { min-width: 180px; }
-    #facilityTable th:nth-child(4),
-    #facilityTable td:nth-child(4) { min-width: 160px; }
-    #facilityTable th:nth-child(5),
-    #facilityTable td:nth-child(5) { min-width: 120px; }
-    #facilityTable th:nth-child(6),
-    #facilityTable td:nth-child(6) { min-width: 120px; }
-    #facilityTable th:nth-child(7),
-    #facilityTable td:nth-child(7) { min-width: 160px; }
-    #facilityTable th:nth-child(8),
-    #facilityTable td:nth-child(8) { min-width: 120px; }
-
-    .facility-card {
-      border: 1px solid #e2e8f0;
-      border-radius: 1rem;
-      background: #ffffff;
-      padding: 1rem;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
-    }
-
-    .facility-card.done {
-      border-color: #86efac;
-      background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 70%);
-    }
-
-    .facility-card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .facility-card-title {
-      font-size: 1rem;
-      font-weight: 900;
-      color: #0f172a;
-      line-height: 1.35;
-    }
-
-    .facility-card-code {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-top: 0.35rem;
-      padding: 0.28rem 0.55rem;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-size: 0.78rem;
-      font-weight: 900;
-      word-break: break-all;
-    }
-
-    .facility-card-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.45rem;
-      margin: 0.8rem 0;
-    }
-
-    .facility-card-row {
-      display: grid;
-      grid-template-columns: 4.7rem 1fr;
-      gap: 0.5rem;
-      font-size: 0.88rem;
-      line-height: 1.45;
-    }
-
-    .facility-card-label {
-      color: #64748b;
-      font-weight: 800;
-    }
-
-    .facility-card-value {
-      color: #1e293b;
-      font-weight: 650;
-      word-break: break-word;
-    }
-
-    .mobile-action-bar {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-      margin-top: 0.8rem;
-    }
-
+    .header-bg { background: linear-gradient(120deg, rgba(30,64,175,.95), rgba(37,99,235,.88)); }
+    .stat-box { background: rgba(255,255,255,.15); border-radius: 1rem; padding: .85rem; text-align: center; }
+    .table-wrap { width: 100%; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; border: 1px solid #e2e8f0; border-radius: 1rem; background: #fff; }
+    #facilityTable { min-width: 1040px; width: 100%; border-collapse: collapse; table-layout: auto; }
+    #facilityTable th { background: #f1f5f9; color: #334155; font-weight: 900; }
+    #facilityTable th, #facilityTable td { padding: .75rem .85rem; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: middle; white-space: nowrap; word-break: keep-all; }
+    #facilityTable tbody tr { display: table-row !important; visibility: visible !important; opacity: 1 !important; }
+    .scanner-panel { border: 2px dashed #93c5fd; background: #eff6ff; border-radius: 1rem; padding: 1rem; }
+    #reader { width: 100%; max-width: 520px; margin: 0 auto; overflow: hidden; border-radius: 1rem; background: #0f172a; }
+    .mobile-result-list { display: none; }
     @media (max-width: 768px) {
-      main { padding: 0.75rem !important; }
-      .header-bg { border-radius: 1rem; padding: 1.2rem; }
-      .header-bg h1 { font-size: 1.6rem; }
+      main { padding: .75rem !important; }
+      .header-bg { border-radius: 1.15rem; padding: 1.25rem; }
+      .header-bg h1 { font-size: 2rem; line-height: 1.15; }
       .material-section { padding: 1rem; border-radius: 1rem; }
-      .section-heading { font-size: 1rem; }
-      .btn { width: 100%; padding: 0.78rem 0.85rem; }
+      .btn { width: 100%; font-size: 1rem; }
       .input-field { font-size: 16px; }
-      .badge { font-size: 0.72rem; padding: 0.25rem 0.5rem; }
-
-      .table-wrap {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        border-radius: 0.85rem;
-        box-shadow: inset -14px 0 18px -18px rgba(15, 23, 42, 0.35);
-      }
-
-      .mobile-card-list { display: none !important; }
-      #facilityTable { display: table; min-width: 1040px; font-size: 0.76rem; }
-      #facilityTable th, #facilityTable td { padding: 0.62rem 0.7rem; line-height: 1.35; }
-      #facilityTable td:nth-child(3),
-      #facilityTable td:nth-child(4),
-      #facilityTable td:nth-child(5),
-      #facilityTable td:nth-child(6) {
-        max-width: 220px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      #facilityTable th:nth-child(1),
-      #facilityTable td:nth-child(1) {
-        position: sticky;
-        left: 0;
-        z-index: 2;
-        background: #ffffff;
-      }
-
-      #facilityTable th:nth-child(1) {
-        background: #f1f5f9;
-        z-index: 3;
-      }
+      .table-wrap { display: none; }
+      .mobile-result-list { display: block; }
+      .mobile-row { display: grid; grid-template-columns: 42px 1fr; gap: .75rem; padding: .9rem .75rem; border-bottom: 1px solid #e2e8f0; background: #fff; }
+      .mobile-row:nth-child(even) { background: #f8fafc; }
+      .mobile-code { font-weight: 900; color: #0f172a; }
+      .mobile-name { font-weight: 900; color: #0f172a; margin-top: .15rem; }
+      .mobile-meta { color: #64748b; font-size: .8rem; margin-top: .25rem; line-height: 1.45; }
+      .mobile-head { display: grid; grid-template-columns: 42px 1fr; gap: .75rem; padding: .75rem; background: #f1f5f9; font-weight: 900; color: #334155; border-bottom: 1px solid #e2e8f0; }
+      .mobile-box { border: 1px solid #e2e8f0; border-radius: 1rem; overflow: hidden; background: #fff; }
     }
-    th { background: #f1f5f9; color: #334155; font-weight: 800; }
-    th, td { padding: 0.75rem 0.85rem; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-    tbody tr:hover { background: #f8fafc; }
-
-    .header-bg {
-      background:
-        linear-gradient(120deg, rgba(30, 64, 175, 0.92), rgba(37, 99, 235, 0.84)),
-        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.25), transparent 20%),
-        radial-gradient(circle at 80% 10%, rgba(255,255,255,0.22), transparent 18%);
-    }
-
     @media print {
-      body { background: white !important; }
       .no-print { display: none !important; }
-      .material-section { box-shadow: none !important; border: 1px solid #cbd5e1 !important; break-inside: avoid; }
-      .header-bg { color: black !important; background: white !important; border: 1px solid #cbd5e1; }
-      th { background: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .badge-done, .badge-wait, .badge-missing { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      input, select, textarea { border: 0 !important; padding: 0 !important; }
-      #facilityTable th:nth-child(8), #facilityTable td:nth-child(8) { display: none !important; }
-    }
-  
-    .scanner-panel {
-      border: 2px dashed #93c5fd;
-      background: #eff6ff;
-      border-radius: 1rem;
-      padding: 1rem;
-    }
-
-    #reader {
-      width: 100%;
-      max-width: 520px;
-      margin: 0 auto;
-      overflow: hidden;
-      border-radius: 1rem;
-      background: #0f172a;
-    }
-
-    #reader video {
-      border-radius: 1rem;
-    }
-
-    .scan-guide {
-      background: rgba(15, 23, 42, 0.86);
-      color: white;
-      border-radius: 0.9rem;
-      padding: 0.75rem 1rem;
-      font-size: 0.9rem;
-    }
-  
-    /* 모바일 표시 보정: 데이터는 10건인데 화면에서 4건까지만 보이는 현상 방지 */
-    .table-wrap {
-      height: auto !important;
-      max-height: none !important;
-      overflow-x: auto !important;
-      overflow-y: visible !important;
-    }
-
-    #facilityTable,
-    #facilityTable tbody,
-    #facilityTable tr {
-      height: auto !important;
-      max-height: none !important;
-    }
-
-    #facilityTable tbody tr,
-    #facilityTable tbody tr:nth-child(n+5) {
-      display: table-row !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
-
-    @media (max-width: 768px) {
-      .table-wrap {
-        height: auto !important;
-        max-height: none !important;
-        overflow-x: auto !important;
-        overflow-y: visible !important;
-      }
-
-      #facilityTable {
-        min-width: 1040px !important;
-        height: auto !important;
-        max-height: none !important;
-      }
-
-      #facilityBody tr {
-        display: table-row !important;
-        height: auto !important;
-        min-height: 0 !important;
-        max-height: none !important;
-      }
+      body { background: #fff !important; }
+      .material-section { box-shadow: none !important; }
+      .table-wrap { display: block !important; overflow: visible !important; }
     }
   </style>
 </head>
-<body class="min-h-screen">
+<body>
   <main id="printArea" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
     <header class="header-bg text-white rounded-[1.5rem] p-6 sm:p-8 mb-6 shadow-xl">
       <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
         <div>
-          <div class="inline-flex items-center gap-2 bg-white/15 rounded-full px-3 py-1 text-sm font-semibold mb-4">
-            <i class="fa-solid fa-barcode"></i>
-            설비 바코드 기반 재고조사 관리
-          </div>
+          <div class="inline-flex items-center gap-2 bg-white/15 rounded-full px-3 py-1 text-sm font-bold mb-4"><i class="fa-solid fa-barcode"></i> 설비 바코드 기반 재고조사 관리</div>
           <h1 class="text-3xl sm:text-4xl font-black tracking-tight">설비 조사 양식</h1>
-          <p class="mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-blue-50">
-            <i class="fa-solid fa-code-branch"></i> 모바일 표시 개선 버전 v2026.01.31
-          </p>
-          <p class="mt-3 text-blue-50 leading-relaxed max-w-2xl">
-            엑셀로 설비 리스트를 등록하고, 설비별 바코드를 스캔하여 재고조사 여부를 자동 체크하는 업무용 양식입니다.
-          </p>
+          <p class="mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-blue-50"><i class="fa-solid fa-code-branch"></i> 단일 데이터 표시 안정화 버전 v2026.02.01</p>
+          <p class="mt-3 text-blue-50 leading-relaxed max-w-2xl">엑셀로 설비 리스트를 등록하고, 설비별 바코드를 스캔하여 재고조사 여부를 자동 체크하는 업무용 양식입니다.</p>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div class="bg-white/15 rounded-2xl p-3">
-            <div id="statTotal" class="text-2xl font-black">0</div>
-            <div class="text-xs text-blue-100">전체 설비</div>
-          </div>
-          <div class="bg-white/15 rounded-2xl p-3">
-            <div id="statDone" class="text-2xl font-black">0</div>
-            <div class="text-xs text-blue-100">조사 완료</div>
-          </div>
-          <div class="bg-white/15 rounded-2xl p-3">
-            <div id="statRemain" class="text-2xl font-black">0</div>
-            <div class="text-xs text-blue-100">미조사</div>
-          </div>
-          <div class="bg-white/15 rounded-2xl p-3">
-            <div id="statRate" class="text-2xl font-black">0%</div>
-            <div class="text-xs text-blue-100">진행률</div>
-          </div>
+          <div class="stat-box"><div data-stat="total" class="text-3xl font-black">0</div><div class="text-xs text-blue-100">전체 설비</div></div>
+          <div class="stat-box"><div data-stat="done" class="text-3xl font-black">0</div><div class="text-xs text-blue-100">조사 완료</div></div>
+          <div class="stat-box"><div data-stat="remain" class="text-3xl font-black">0</div><div class="text-xs text-blue-100">미조사</div></div>
+          <div class="stat-box"><div data-stat="rate" class="text-3xl font-black">0%</div><div class="text-xs text-blue-100">진행률</div></div>
         </div>
       </div>
     </header>
@@ -391,158 +127,72 @@
     <section class="material-section mb-5">
       <h2 class="section-heading"><i class="fa-solid fa-clipboard-check"></i> 재고조사 기본 정보</h2>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <label class="block">
-          <span class="text-sm font-bold text-slate-700">재고조사명</span>
-          <input id="surveyTitle" class="input-field mt-1" placeholder="예: 2026년 상반기 설비 재고조사" data-sample="2026년 상반기 설비 재고조사" />
-        </label>
-        <label class="block">
-          <span class="text-sm font-bold text-slate-700">재고조사 날짜</span>
-          <input id="surveyDate" type="date" class="input-field mt-1" />
-        </label>
-        <label class="block">
-          <span class="text-sm font-bold text-slate-700">회차</span>
-          <input id="surveyRound" type="number" min="1" class="input-field mt-1" placeholder="예: 1" data-sample="1" />
-        </label>
-        <label class="block">
-          <span class="text-sm font-bold text-slate-700">담당 부서 / 담당자</span>
-          <input id="manager" class="input-field mt-1" placeholder="예: 생산관리팀 홍길동" data-sample="생산관리팀 홍길동" />
-        </label>
+        <label><span class="text-sm font-bold text-slate-700">재고조사명</span><input id="surveyTitle" class="input-field mt-1" placeholder="예: 정기 설비 재고조사" /></label>
+        <label><span class="text-sm font-bold text-slate-700">재고조사 날짜</span><input id="surveyDate" type="date" class="input-field mt-1" /></label>
+        <label><span class="text-sm font-bold text-slate-700">회차</span><input id="surveyRound" type="number" min="1" class="input-field mt-1" placeholder="예: 1" /></label>
+        <label><span class="text-sm font-bold text-slate-700">담당 부서 / 담당자</span><input id="manager" class="input-field mt-1" placeholder="예: 생산관리팀 홍길동" /></label>
       </div>
     </section>
 
     <section class="material-section mb-5 no-print">
       <h2 class="section-heading"><i class="fa-solid fa-file-excel"></i> 엑셀 업로드 및 데이터 등록</h2>
+      <p class="text-sm text-slate-600 mb-2">엑셀 컬럼은 <b>설비코드, 설비명, 위치, 부서, 관리자, 비고</b> 순서를 권장합니다.</p>
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-end">
-        <div>
-          <p class="text-sm text-slate-600 mb-2">
-            엑셀 첫 행에는 <b>설비명</b>, <b>설비코드</b>, <b>위치</b>, <b>부서</b>, <b>관리자</b>, <b>비고</b> 중 가능한 항목명을 넣어 주세요. 설비코드가 없으면 자동으로 바코드 번호가 부여됩니다.
-          </p>
-          <input id="excelFile" type="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,application/octet-stream" class="input-field bg-white" />
-          <p class="text-xs text-slate-500 mt-2">
-            핸드폰에서 파일이 보이지 않으면 엑셀 파일을 먼저 <b>내 파일/다운로드/iCloud Drive</b>에 저장한 뒤 선택해 주세요. 일부 모바일 브라우저에서는 파일 형식 필터 때문에 엑셀 파일이 숨겨질 수 있습니다.
-          </p>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <button class="btn btn-primary" onclick="downloadTemplate()"><i class="fa-solid fa-download"></i> 엑셀 양식 받기</button>
-          <button class="btn btn-soft" onclick="loadSampleData()"><i class="fa-solid fa-wand-magic-sparkles"></i> 예시 데이터</button>
-          <button class="btn btn-danger" onclick="clearAllData()"><i class="fa-solid fa-trash"></i> 전체 초기화</button>
-        </div>
+        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,application/octet-stream" class="input-field bg-white" />
+        <div class="flex flex-wrap gap-2"><button class="btn btn-primary" onclick="downloadTemplate()"><i class="fa-solid fa-download"></i> 엑셀 양식</button><button class="btn btn-soft" onclick="loadSampleData()"><i class="fa-solid fa-wand-magic-sparkles"></i> 예시 데이터</button><button class="btn btn-danger" onclick="clearAllData()"><i class="fa-solid fa-trash"></i> 전체 초기화</button></div>
       </div>
+      <div id="uploadMessage" class="mt-3 text-sm font-black text-blue-700"></div>
+      <div id="debugInfo" class="mt-2 text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded-xl p-3 hidden"></div>
     </section>
 
     <section class="material-section mb-5 no-print">
       <h2 class="section-heading"><i class="fa-solid fa-mobile-screen-button"></i> 바코드 스캔 등록</h2>
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] gap-4 items-end">
-        <label class="block">
-          <span class="text-sm font-bold text-slate-700">스캔한 바코드 / 설비코드</span>
-          <input id="barcodeInput" class="input-field mt-1 text-lg font-bold tracking-wide" placeholder="핸드폰 카메라 또는 스캐너로 바코드를 찍으면 여기에 입력됩니다." autofocus />
-          <span class="text-xs text-slate-500 mt-1 block">핸드폰은 아래 ‘카메라로 스캔’ 버튼을 눌러 촬영해 주세요. 외부 스캐너는 Enter 입력 시 자동 저장됩니다.</span>
-        </label>
+        <label><span class="text-sm font-bold text-slate-700">스캔한 바코드 / 설비코드</span><input id="barcodeInput" class="input-field mt-1 text-lg font-bold tracking-wide" placeholder="카메라 또는 스캐너로 바코드를 입력하세요." /></label>
         <button class="btn btn-primary h-[3.1rem]" onclick="markByBarcode()"><i class="fa-solid fa-check"></i> 조사 완료 저장</button>
         <button class="btn btn-dark h-[3.1rem]" onclick="openCameraScanner()"><i class="fa-solid fa-camera"></i> 카메라로 스캔</button>
       </div>
-
-      <div id="scannerPanel" class="scanner-panel mt-4 hidden">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
-          <div>
-            <p class="font-black text-blue-900"><i class="fa-solid fa-qrcode"></i> 핸드폰 카메라 바코드 인식</p>
-            <p class="text-sm text-slate-600 mt-1">카메라 권한을 허용한 뒤 바코드 또는 QR코드를 화면 중앙에 맞춰 주세요. 인식되면 자동으로 조사 완료 처리됩니다.</p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button class="btn btn-soft" onclick="switchCamera()"><i class="fa-solid fa-rotate"></i> 카메라 전환</button>
-            <button class="btn btn-danger" onclick="stopCameraScanner()"><i class="fa-solid fa-xmark"></i> 스캔 종료</button>
-          </div>
-        </div>
-        <div class="scan-guide mb-3">
-          <i class="fa-solid fa-circle-info"></i>
-          실사용 시에는 HTTPS 주소 또는 localhost에서 접속해야 카메라 권한이 정상 동작합니다.
-        </div>
-        <div id="reader"></div>
-      </div>
-
+      <div id="scannerPanel" class="scanner-panel mt-4 hidden"><div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3"><div><p class="font-black text-blue-900"><i class="fa-solid fa-qrcode"></i> 핸드폰 카메라 바코드 인식</p><p class="text-sm text-slate-600 mt-1">바코드를 화면 중앙에 맞춰 주세요. 인식되면 자동으로 조사 완료 처리됩니다.</p></div><div class="flex gap-2"><button class="btn btn-soft" onclick="switchCamera()"><i class="fa-solid fa-rotate"></i> 전환</button><button class="btn btn-danger" onclick="stopCameraScanner()"><i class="fa-solid fa-xmark"></i> 종료</button></div></div><div id="reader"></div></div>
       <div id="scanMessage" class="mt-3 text-sm font-bold"></div>
-      <div id="debugInfo" class="mt-2 text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded-xl p-3 hidden"></div>
     </section>
 
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
       <div class="material-section lg:col-span-2">
         <h2 class="section-heading"><i class="fa-solid fa-chart-simple"></i> 조사 현황 요약</h2>
-        <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden">
-          <div id="progressBar" class="bg-blue-600 h-4 rounded-full transition-all" style="width:0%"></div>
-        </div>
+        <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden"><div id="progressBar" class="bg-blue-600 h-4 rounded-full transition-all" style="width:0%"></div></div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 text-sm">
-          <div class="rounded-2xl bg-slate-50 p-4 border"><b>전체</b><div id="summaryTotal" class="text-2xl font-black mt-1">0</div></div>
-          <div class="rounded-2xl bg-green-50 p-4 border border-green-100"><b>조사 완료</b><div id="summaryDone" class="text-2xl font-black mt-1 text-green-700">0</div></div>
-          <div class="rounded-2xl bg-amber-50 p-4 border border-amber-100"><b>미조사</b><div id="summaryRemain" class="text-2xl font-black mt-1 text-amber-700">0</div></div>
-          <div class="rounded-2xl bg-blue-50 p-4 border border-blue-100"><b>완료율</b><div id="summaryRate" class="text-2xl font-black mt-1 text-blue-700">0%</div></div>
+          <div class="rounded-2xl bg-slate-50 p-4 border"><b>전체</b><div data-stat="total" class="text-3xl font-black mt-1">0</div></div>
+          <div class="rounded-2xl bg-green-50 p-4 border border-green-100"><b>조사 완료</b><div data-stat="done" class="text-3xl font-black mt-1 text-green-700">0</div></div>
+          <div class="rounded-2xl bg-amber-50 p-4 border border-amber-100"><b>미조사</b><div data-stat="remain" class="text-3xl font-black mt-1 text-amber-700">0</div></div>
+          <div class="rounded-2xl bg-blue-50 p-4 border border-blue-100"><b>완료율</b><div data-stat="rate" class="text-3xl font-black mt-1 text-blue-700">0%</div></div>
         </div>
       </div>
-      <div class="material-section">
-        <h2 class="section-heading"><i class="fa-solid fa-floppy-disk"></i> 저장 및 출력</h2>
-        <div class="grid grid-cols-2 gap-2 no-print">
-          <button class="btn btn-soft" onclick="saveLocal()"><i class="fa-solid fa-save"></i> 자동저장</button>
-          <button class="btn btn-soft" onclick="loadLocal()"><i class="fa-solid fa-folder-open"></i> 불러오기</button>
-          <button class="btn btn-success" onclick="exportJson()"><i class="fa-solid fa-file-export"></i> JSON 저장</button>
-          <label class="btn btn-success cursor-pointer"><i class="fa-solid fa-file-import"></i> JSON 불러오기<input id="jsonImport" type="file" accept=".json" class="hidden" /></label>
-          <button class="btn btn-dark" onclick="window.print()"><i class="fa-solid fa-print"></i> 인쇄</button>
-          <button class="btn btn-dark" onclick="savePdf()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-        </div>
-        <p class="text-xs text-slate-500 mt-3">입력 내용은 브라우저에 자동 저장됩니다. 개인정보 및 사내 자산정보 취급 기준에 따라 파일을 관리해 주세요.</p>
-      </div>
+      <div class="material-section"><h2 class="section-heading"><i class="fa-solid fa-floppy-disk"></i> 저장 및 출력</h2><div class="grid grid-cols-2 gap-2 no-print"><button class="btn btn-soft" onclick="saveLocal()"><i class="fa-solid fa-save"></i> 자동저장</button><button class="btn btn-soft" onclick="loadLocal()"><i class="fa-solid fa-folder-open"></i> 불러오기</button><button class="btn btn-success" onclick="exportJson()"><i class="fa-solid fa-file-export"></i> JSON 저장</button><label class="btn btn-success cursor-pointer"><i class="fa-solid fa-file-import"></i> JSON 불러오기<input id="jsonImport" type="file" accept=".json" class="hidden" /></label><button class="btn btn-dark" onclick="window.print()"><i class="fa-solid fa-print"></i> 인쇄</button><button class="btn btn-dark" onclick="savePdf()"><i class="fa-solid fa-file-pdf"></i> PDF</button></div><p class="text-xs text-slate-500 mt-3">입력 내용은 브라우저에 자동 저장됩니다.</p></div>
     </section>
 
     <section class="material-section">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-        <h2 class="section-heading mb-0"><i class="fa-solid fa-list-check"></i> 설비별 재고조사 결과</h2>
-        <div class="flex flex-col sm:flex-row gap-2 no-print">
-          <input id="searchInput" class="input-field sm:w-72" placeholder="설비명, 코드, 위치 검색" />
-          <select id="statusFilter" class="input-field sm:w-40">
-            <option value="all">전체</option>
-            <option value="done">조사 완료</option>
-            <option value="remain">미조사</option>
-          </select>
-          <button class="btn btn-primary" onclick="exportExcel()"><i class="fa-solid fa-table"></i> 결과 엑셀</button>
-        </div>
-      </div>
-      <div id="facilityMobileCards" class="mobile-card-list"></div>
-      <p class="no-print text-xs text-blue-700 font-bold mb-2 md:hidden"><i class="fa-solid fa-arrows-left-right"></i> 핸드폰에서는 표를 좌우로 밀어서 전체 항목을 확인해 주세요.</p>
-      <div class="table-wrap">
-        <table id="facilityTable" class="min-w-full text-sm bg-white">
-          <thead>
-            <tr>
-              <th class="text-left">No.</th>
-              <th class="text-left">바코드/설비코드</th>
-              <th class="text-left">설비명</th>
-              <th class="text-left">위치</th>
-              <th class="text-left">부서</th>
-              <th class="text-left">관리자</th>
-              <th class="text-left">재고조사 여부</th>
-              <th class="text-left no-print">관리</th>
-            </tr>
-          </thead>
-          <tbody id="facilityBody">
-            <tr><td colspan="8" class="text-center text-slate-500 py-8">엑셀을 업로드하거나 예시 데이터를 등록해 주세요.</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="mt-3 text-xs text-slate-500">PC와 핸드폰 모두 표 형식으로 표시됩니다. 핸드폰에서는 좌우 스크롤로 바코드, 설비명, 위치, 부서, 조사 여부를 확인하실 수 있습니다.</p>
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"><h2 class="section-heading mb-0"><i class="fa-solid fa-list-check"></i> 설비별 재고조사 결과</h2><div class="flex flex-col sm:flex-row gap-2 no-print"><input id="searchInput" class="input-field sm:w-72" placeholder="설비명, 코드, 위치 검색" /><select id="statusFilter" class="input-field sm:w-40"><option value="all">전체</option><option value="done">조사 완료</option><option value="remain">미조사</option></select><button class="btn btn-primary" onclick="exportExcel()"><i class="fa-solid fa-table"></i> 결과 엑셀</button></div></div>
+      <p class="no-print text-xs text-blue-700 font-bold mb-2"><i class="fa-solid fa-arrows-left-right"></i> PC는 표로, 핸드폰은 모바일 목록으로 전체 건수가 표시됩니다.</p>
+      <div id="mobileResultList" class="mobile-result-list"></div>
+      <div class="table-wrap"><table id="facilityTable"><thead><tr><th>No.</th><th>바코드/설비코드</th><th>설비명</th><th>위치</th><th>부서</th><th>관리자</th><th>재고조사 여부</th><th class="no-print">관리</th></tr></thead><tbody id="facilityBody"><tr><td colspan="8" class="text-center text-slate-500 py-8">엑셀을 업로드하거나 예시 데이터를 등록해 주세요.</td></tr></tbody></table></div>
+      <p class="mt-3 text-xs text-slate-500">현재 표시 목록은 업로드된 전체 데이터 배열 하나를 기준으로 출력됩니다.</p>
     </section>
   </main>
 
   <script>
-    const STORAGE_KEY = 'facilityInventorySurvey.v20260131';
+    const STORAGE_KEY = 'facilityInventorySurvey.clean.v20260201';
     let facilities = [];
     let html5QrCode = null;
     let scannerRunning = false;
     let cameraFacingMode = 'environment';
     let lastScannedCode = '';
     let lastScannedAt = 0;
-
     const $ = (id) => document.getElementById(id);
 
-    function normalizeHeader(header) {
-      return String(header || '').replace(/\s/g, '').toLowerCase();
-    }
+    function todayString() { return new Date().toISOString().slice(0, 10); }
+    function normalizeHeader(v) { return String(v || '').replace(/\s/g, '').toLowerCase(); }
+    function escapeHtml(v) { return String(v ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;'}[ch])); }
+    function makeBarcode(index, code) { const c = String(code || '').trim(); return c || 'FAC-' + String(index + 1).padStart(5, '0'); }
 
     function pickValue(row, keys) {
       const headers = Object.keys(row);
@@ -553,140 +203,46 @@
       return '';
     }
 
-    function parseExcelRows(sheet) {
-      const matrix = XLSX.utils.sheet_to_json(sheet, {
-        header: 1,
-        defval: '',
-        blankrows: false,
-        raw: false
+    function buildFacility(row, index) {
+      const code = pickValue(row, ['설비코드', '설비번호', '바코드', '자산번호', 'code', 'barcode']);
+      return {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+        barcode: makeBarcode(index, code),
+        name: pickValue(row, ['설비명', '장비명', '자산명', '품명', 'name']) || `설비 ${index + 1}`,
+        location: pickValue(row, ['위치', '설치위치', '장소', 'location']),
+        department: pickValue(row, ['부서', '담당부서', '사용부서', 'department']),
+        manager: pickValue(row, ['관리자', '담당자', '책임자', 'manager']),
+        note: pickValue(row, ['비고', '메모', '특이사항', 'note']),
+        checked: false,
+        checkedAt: ''
+      };
+    }
+
+    function parseSheet(sheet) {
+      const matrix = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', blankrows: false, raw: false });
+      const rows = matrix.filter(r => Array.isArray(r) && r.some(c => String(c ?? '').trim() !== ''));
+      if (!rows.length) return [];
+      const headerIndex = rows.findIndex(r => r.some(c => ['설비코드', '설비명', '바코드', '자산번호', '장비명'].some(k => normalizeHeader(c).includes(normalizeHeader(k)))));
+      const hIdx = headerIndex >= 0 ? headerIndex : 0;
+      const headers = rows[hIdx].map((c, i) => String(c || '').trim() || `컬럼${i + 1}`);
+      return rows.slice(hIdx + 1).filter(r => r.some(c => String(c ?? '').trim() !== '')).map(r => {
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = String(r[i] ?? '').trim());
+        return obj;
       });
+    }
 
-      const nonEmptyRows = matrix.filter(row =>
-        Array.isArray(row) && row.some(cell => String(cell ?? '').trim() !== '')
-      );
-
-      if (!nonEmptyRows.length) return [];
-
-      const headerKeywords = [
-        '설비명', '장비명', '자산명', '품명', '설비코드', '설비번호', '바코드', '자산번호',
-        '위치', '설치위치', '부서', '담당부서', '관리자', '담당자', '비고',
-        'name', 'code', 'barcode', 'asset', 'facility', 'equipment', 'location', 'department'
-      ];
-
-      let headerIndex = 0;
-      let bestScore = -1;
-
-      nonEmptyRows.forEach((row, rowIndex) => {
-        const score = row.reduce((sum, cell) => {
-          const normalized = normalizeHeader(cell);
-          if (!normalized) return sum;
-          return sum + headerKeywords.filter(key => normalized.includes(normalizeHeader(key))).length;
-        }, 0);
-
-        if (score > bestScore) {
-          bestScore = score;
-          headerIndex = rowIndex;
-        }
+    function parseWorkbook(workbook) {
+      let best = { sheetName: '', rows: [] };
+      workbook.SheetNames.forEach(sheetName => {
+        const rows = parseSheet(workbook.Sheets[sheetName]);
+        if (rows.length > best.rows.length) best = { sheetName, rows };
       });
-
-      // 헤더 키워드를 찾지 못해도 첫 번째 행을 헤더로 사용합니다.
-      const headerRow = nonEmptyRows[headerIndex] || nonEmptyRows[0];
-      const headers = headerRow.map((cell, index) => {
-        const text = String(cell ?? '').trim();
-        return text || `컬럼${index + 1}`;
-      });
-
-      const dataStartIndex = headerIndex + 1;
-      const dataRows = nonEmptyRows.slice(dataStartIndex);
-
-      return dataRows
-        .map(row => {
-          const obj = {};
-          headers.forEach((header, index) => {
-            obj[header] = row[index] !== undefined && row[index] !== null ? String(row[index]).trim() : '';
-          });
-          return obj;
-        })
-        .filter(row => Object.values(row).some(value => String(value ?? '').trim() !== ''));
+      return best;
     }
 
-    function parseWorkbookRows(workbook) {
-      const candidates = workbook.SheetNames.map(sheetName => {
-        const sheet = workbook.Sheets[sheetName];
-        const rows = parseExcelRows(sheet);
-        return { sheetName, rows };
-      }).filter(candidate => candidate.rows.length > 0);
-
-      if (!candidates.length) return { sheetName: '', rows: [] };
-
-      // 여러 시트가 있는 경우 데이터 행이 가장 많은 시트를 자동 선택합니다.
-      candidates.sort((a, b) => b.rows.length - a.rows.length);
-      return candidates[0];
-    }
-
-    function makeBarcode(index, code) {
-      const cleanCode = String(code || '').trim();
-      if (cleanCode) return cleanCode;
-      return 'FAC-' + String(index + 1).padStart(5, '0');
-    }
-
-    function todayString() {
-      const d = new Date();
-      return d.toISOString().slice(0, 10);
-    }
-
-    function setDefaultDate() {
-      if (!$('surveyDate').value) $('surveyDate').value = todayString();
-    }
-
-    function renderTable() {
-      const keyword = $('searchInput').value.trim().toLowerCase();
-      const filter = $('statusFilter').value;
-
-      const rows = facilities.filter(item => {
-        const haystack = [item.barcode, item.name, item.location, item.department, item.manager, item.note].join(' ').toLowerCase();
-        const keywordOk = !keyword || haystack.includes(keyword);
-        const statusOk = filter === 'all' || (filter === 'done' && item.checked) || (filter === 'remain' && !item.checked);
-        return keywordOk && statusOk;
-      });
-
-      if (!rows.length) {
-        $('facilityBody').innerHTML = '<tr><td colspan="8" class="text-center text-slate-500 py-8">표시할 설비가 없습니다.</td></tr>';
-        const mobileCards = $('facilityMobileCards');
-        if (mobileCards) mobileCards.innerHTML = '';
-        updateStats();
-        return;
-      }
-
-      $('facilityBody').innerHTML = rows.map((item, idx) => `
-        <tr class="${item.checked ? 'bg-green-50/40' : ''}">
-          <td>${idx + 1}</td>
-          <td><span class="font-black tracking-wide">${escapeHtml(item.barcode)}</span></td>
-          <td class="font-bold" title="${escapeHtml(item.name || '-')}">${escapeHtml(item.name || '-')}</td>
-          <td title="${escapeHtml(item.location || '-')}">${escapeHtml(item.location || '-')}</td>
-          <td title="${escapeHtml(item.department || '-')}">${escapeHtml(item.department || '-')}</td>
-          <td title="${escapeHtml(item.manager || '-')}">${escapeHtml(item.manager || '-')}</td>
-          <td>
-            ${item.checked
-              ? `<span class="badge badge-done"><i class="fa-solid fa-circle-check"></i> 조사 완료</span><div class="text-xs text-slate-500 mt-1">${escapeHtml(item.checkedAt || '')}</div>`
-              : `<span class="badge badge-wait"><i class="fa-solid fa-clock"></i> 미조사</span>`}
-          </td>
-          <td class="no-print">
-            <div class="flex flex-wrap gap-1">
-              <button class="btn btn-success !py-1 !px-2 text-xs" onclick="toggleChecked('${encodeURIComponent(item.id)}', true)">완료</button>
-              <button class="btn btn-danger !py-1 !px-2 text-xs" onclick="toggleChecked('${encodeURIComponent(item.id)}', false)">해제</button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-
-      const mobileCards = $('facilityMobileCards');
-      if (mobileCards) mobileCards.innerHTML = '';
-      updateStats();
-    }
-
-    function replaceFacilities(newFacilities, message = '') {
-      const cleanList = Array.isArray(newFacilities) ? newFacilities.map((item, index) => ({
+    function setFacilities(newList, message) {
+      facilities = newList.map((item, index) => ({
         id: item.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random() + index)),
         barcode: String(item.barcode || makeBarcode(index, '')).trim(),
         name: String(item.name || `설비 ${index + 1}`).trim(),
@@ -696,528 +252,122 @@
         note: String(item.note || '').trim(),
         checked: Boolean(item.checked),
         checkedAt: item.checkedAt || ''
-      })) : [];
-
-      facilities.length = 0;
-      cleanList.forEach(item => facilities.push(item));
-
+      }));
       $('searchInput').value = '';
       $('statusFilter').value = 'all';
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
+      saveLocal(true);
+      renderAll();
+      showUploadMessage(message || `${facilities.length}건이 등록되었습니다.`);
+      showDebug();
+    }
 
-      forceRefreshAll();
-
-      showDebugInfo('replaceFacilities', {
-        newFacilitiesLength: cleanList.length,
-        facilitiesLength: facilities.length,
-        storageLength: getStoredFacilitiesLength(),
-        renderedRows: document.querySelectorAll('#facilityBody tr').length,
-        filter: $('statusFilter').value,
-        keyword: $('searchInput').value
+    function getFilteredFacilities() {
+      const keyword = $('searchInput').value.trim().toLowerCase();
+      const filter = $('statusFilter').value;
+      return facilities.filter(item => {
+        const text = [item.barcode, item.name, item.location, item.department, item.manager, item.note].join(' ').toLowerCase();
+        const keywordOk = !keyword || text.includes(keyword);
+        const statusOk = filter === 'all' || (filter === 'done' && item.checked) || (filter === 'remain' && !item.checked);
+        return keywordOk && statusOk;
       });
-      if (message) showScanMessage(message, 'text-blue-700');
     }
 
-    function getStoredFacilitiesLength() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return 0;
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed.facilities) ? parsed.facilities.length : 0;
-      } catch (e) {
-        return -1;
-      }
+    function renderAll() { renderTable(); renderMobileList(); updateStats(); }
+
+    function renderTable() {
+      const rows = getFilteredFacilities();
+      if (!rows.length) { $('facilityBody').innerHTML = '<tr><td colspan="8" class="text-center text-slate-500 py-8">표시할 설비가 없습니다.</td></tr>'; return; }
+      $('facilityBody').innerHTML = rows.map((item, i) => `<tr><td>${i + 1}</td><td><b>${escapeHtml(item.barcode)}</b></td><td><b>${escapeHtml(item.name)}</b></td><td>${escapeHtml(item.location || '-')}</td><td>${escapeHtml(item.department || '-')}</td><td>${escapeHtml(item.manager || '-')}</td><td>${item.checked ? `<span class="badge badge-done"><i class="fa-solid fa-circle-check"></i> 조사 완료</span><div class="text-xs text-slate-500 mt-1">${escapeHtml(item.checkedAt)}</div>` : `<span class="badge badge-wait"><i class="fa-solid fa-clock"></i> 미조사</span>`}</td><td class="no-print"><button class="btn btn-success !py-1 !px-2 text-xs" onclick="toggleChecked('${item.id}', true)">완료</button> <button class="btn btn-danger !py-1 !px-2 text-xs" onclick="toggleChecked('${item.id}', false)">해제</button></td></tr>`).join('');
     }
 
-    function showDebugInfo(title, info) {
-      const box = $('debugInfo');
-      if (!box) return;
-      box.classList.remove('hidden');
-      box.innerHTML = `
-        <div class="font-black text-slate-800 mb-1">업로드 진단 정보: ${escapeHtml(title)}</div>
-        <div>읽은 데이터: <b>${escapeHtml(info.newFacilitiesLength ?? '-')}</b>건</div>
-        <div>현재 화면 데이터 배열: <b>${escapeHtml(info.facilitiesLength ?? '-')}</b>건</div>
-        <div>브라우저 저장 데이터: <b>${escapeHtml(info.storageLength ?? '-')}</b>건</div>
-        <div>표 렌더링 행 수: <b>${escapeHtml(info.renderedRows ?? '-')}</b>행</div>
-        <div>검색어: <b>${escapeHtml(info.keyword || '없음')}</b> / 필터: <b>${escapeHtml(info.filter || '없음')}</b></div>
-      `;
+    function renderMobileList() {
+      const box = $('mobileResultList');
+      const rows = getFilteredFacilities();
+      if (!rows.length) { box.innerHTML = '<div class="text-center text-slate-500 py-8 border rounded-2xl bg-white">표시할 설비가 없습니다.</div>'; return; }
+      box.innerHTML = `<div class="mb-2 text-sm font-black text-blue-800">모바일 표시 목록: ${rows.length}건</div><div class="mobile-box"><div class="mobile-head"><div>No.</div><div>설비 정보</div></div>${rows.map((item, i) => `<div class="mobile-row"><div class="font-black">${i + 1}</div><div><div class="mobile-code">${escapeHtml(item.barcode)}</div><div class="mobile-name">${escapeHtml(item.name)}</div><div class="mobile-meta">${escapeHtml(item.location || '-')} · ${escapeHtml(item.department || '-')} · ${escapeHtml(item.manager || '-')}</div><div class="mt-2">${item.checked ? '<span class="badge badge-done">조사 완료</span>' : '<span class="badge badge-wait">미조사</span>'}</div></div></div>`).join('')}</div>`;
     }
 
     function updateStats() {
-      const total = Array.isArray(facilities) ? facilities.length : 0;
+      const total = facilities.length;
       const done = facilities.filter(x => x.checked).length;
       const remain = total - done;
-      const rate = total ? Math.round((done / total) * 100) : 0;
-
-      setStatText('#statTotal, #summaryTotal, [data-stat="total"]', total);
-      setStatText('#statDone, #summaryDone, [data-stat="done"]', done);
-      setStatText('#statRemain, #summaryRemain, [data-stat="remain"]', remain);
-      setStatText('#statRate, #summaryRate, [data-stat="rate"]', rate + '%');
-
-      if ($('progressBar')) $('progressBar').style.width = rate + '%';
-      syncVisibleSummaryCards(total, done, remain, rate);
+      const rate = total ? Math.round(done / total * 100) : 0;
+      document.querySelectorAll('[data-stat="total"]').forEach(el => el.textContent = total);
+      document.querySelectorAll('[data-stat="done"]').forEach(el => el.textContent = done);
+      document.querySelectorAll('[data-stat="remain"]').forEach(el => el.textContent = remain);
+      document.querySelectorAll('[data-stat="rate"]').forEach(el => el.textContent = rate + '%');
+      $('progressBar').style.width = rate + '%';
     }
 
-    function setStatText(selector, value) {
-      document.querySelectorAll(selector).forEach(el => {
-        el.textContent = value;
-      });
-    }
+    function showUploadMessage(msg) { $('uploadMessage').className = 'mt-3 text-sm font-black text-blue-700'; $('uploadMessage').textContent = msg; }
+    function showScanMessage(msg, cls = 'text-blue-700') { $('scanMessage').className = `mt-3 text-sm font-bold ${cls}`; $('scanMessage').textContent = msg; }
+    function showDebug() { const rows = getFilteredFacilities(); $('debugInfo').classList.remove('hidden'); $('debugInfo').innerHTML = `<b>진단 정보</b><br>전체 데이터 배열: ${facilities.length}건<br>현재 표시 목록: ${rows.length}건<br>표 DOM 행 수: ${document.querySelectorAll('#facilityBody tr').length}행<br>모바일 목록 표시: ${rows.length}건`; }
 
-    function syncVisibleSummaryCards(total, done, remain, rate) {
-      document.querySelectorAll('.material-section').forEach(section => {
-        const title = section.textContent || '';
-        if (!title.includes('조사 현황 요약')) return;
-
-        const cards = Array.from(section.querySelectorAll('div')).filter(div => {
-          const text = div.textContent || '';
-          return text.includes('전체') || text.includes('조사 완료') || text.includes('미조사') || text.includes('완료율');
-        });
-
-        cards.forEach(card => {
-          const text = card.textContent || '';
-          const numberEl = Array.from(card.querySelectorAll('div, span, b')).find(el => /^\d+%?$/.test((el.textContent || '').trim()));
-          if (!numberEl) return;
-          if (text.includes('완료율')) numberEl.textContent = rate + '%';
-          else if (text.includes('조사 완료')) numberEl.textContent = done;
-          else if (text.includes('미조사')) numberEl.textContent = remain;
-          else if (text.includes('전체')) numberEl.textContent = total;
-        });
-      });
-    }
-
-    function forceRefreshAll() {
-      renderTable();
-      updateStats();
-      revealAllRenderedRows();
-      setTimeout(() => {
-        renderTable();
-        updateStats();
-        revealAllRenderedRows();
-      }, 50);
-      setTimeout(() => {
-        updateStats();
-        revealAllRenderedRows();
-      }, 250);
-    }
-
-    function revealAllRenderedRows() {
-      document.querySelectorAll('#facilityBody tr').forEach(row => {
-        row.style.display = 'table-row';
-        row.style.visibility = 'visible';
-        row.style.opacity = '1';
-        row.style.height = 'auto';
-        row.style.maxHeight = 'none';
-      });
-
-      const wrap = document.querySelector('.table-wrap');
-      if (wrap) {
-        wrap.style.height = 'auto';
-        wrap.style.maxHeight = 'none';
-        wrap.style.overflowX = 'auto';
-        wrap.style.overflowY = 'visible';
-      }
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? '').replace(/[&<>'"]/g, char => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-      }[char]));
-    }
-
-    function buildFacility(row, index) {
-      const code = pickValue(row, ['설비코드', '설비번호', '바코드', '자산번호', 'code', 'barcode', 'asset']);
-      const barcode = makeBarcode(index, code);
-      return {
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
-        barcode,
-        name: pickValue(row, ['설비명', '장비명', '자산명', '품명', 'name', 'facility', 'equipment']) || `설비 ${index + 1}`,
-        location: pickValue(row, ['위치', '설치위치', '장소', 'location', 'place']),
-        department: pickValue(row, ['부서', '담당부서', '사용부서', 'department', 'team']),
-        manager: pickValue(row, ['관리자', '담당자', '책임자', 'manager', 'owner']),
-        note: pickValue(row, ['비고', '메모', '특이사항', 'note', 'remark']),
-        checked: false,
-        checkedAt: ''
-      };
-    }
-
-    function buildFacilityFromArray(row, index) {
-      return {
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
-        barcode: makeBarcode(index, row[0]),
-        name: String(row[1] || `설비 ${index + 1}`).trim(),
-        location: String(row[2] || '').trim(),
-        department: String(row[3] || '').trim(),
-        manager: String(row[4] || '').trim(),
-        note: String(row[5] || '').trim(),
-        checked: false,
-        checkedAt: ''
-      };
-    }
-
-    function parseStandardFacilitySheet(sheet) {
-      const matrix = XLSX.utils.sheet_to_json(sheet, {
-        header: 1,
-        defval: '',
-        blankrows: false,
-        raw: false
-      });
-
-      const nonEmptyRows = matrix.filter(row =>
-        Array.isArray(row) && row.some(cell => String(cell ?? '').trim() !== '')
-      );
-
-      const headerIndex = nonEmptyRows.findIndex(row =>
-        normalizeHeader(row[0]).includes('설비코드') &&
-        normalizeHeader(row[1]).includes('설비명')
-      );
-
-      if (headerIndex < 0) return [];
-
-      return nonEmptyRows
-        .slice(headerIndex + 1)
-        .filter(row => String(row[0] || '').trim() || String(row[1] || '').trim())
-        .map(buildFacilityFromArray);
-    }
-
-    $('excelFile').addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) {
-        showScanMessage('파일이 선택되지 않았습니다. 핸드폰의 내 파일/다운로드 폴더에 엑셀 파일을 저장한 뒤 다시 선택해 주세요.', 'text-red-700');
-        return;
-      }
-
-      const fileName = String(file.name || '').toLowerCase();
-      const allowed = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
-      if (!allowed) {
-        showScanMessage('엑셀(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드할 수 있습니다.', 'text-red-700');
-        return;
-      }
-
+    $('excelFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
       try {
-        const data = await file.arrayBuffer();
-        const workbook = XLSX.read(data, { type: 'array', cellDates: true });
-        let selectedSheetName = workbook.SheetNames[0];
-        let directFacilities = [];
-
-        for (const sheetName of workbook.SheetNames) {
-          const candidate = parseStandardFacilitySheet(workbook.Sheets[sheetName]);
-          if (candidate.length > directFacilities.length) {
-            directFacilities = candidate;
-            selectedSheetName = sheetName;
-          }
-        }
-
-        if (!directFacilities.length) {
-          const parsed = parseWorkbookRows(workbook);
-          selectedSheetName = parsed.sheetName;
-          directFacilities = parsed.rows.map(buildFacility);
-        }
-
-        if (!directFacilities.length) {
-          showScanMessage('엑셀에서 등록 가능한 데이터 행을 찾지 못했습니다. 첫 행에 설비코드, 설비명 제목이 있는지 확인해 주세요.', 'text-red-700');
-          return;
-        }
-
-        replaceFacilities(
-          directFacilities,
-          `${selectedSheetName} 시트에서 ${directFacilities.length}건의 설비 리스트가 모두 등록되었습니다.`
-        );
-      } catch (error) {
-        console.error(error);
-        showScanMessage('엑셀 파일을 읽지 못했습니다. 파일이 손상되었거나 지원하지 않는 형식일 수 있습니다.', 'text-red-700');
-      }
+        const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array', cellDates: true });
+        const parsed = parseWorkbook(workbook);
+        if (!parsed.rows.length) { showUploadMessage('엑셀에서 데이터 행을 찾지 못했습니다.'); return; }
+        setFacilities(parsed.rows.map(buildFacility), `${parsed.sheetName} 시트에서 ${parsed.rows.length}건의 설비 리스트가 모두 등록되었습니다.`);
+      } catch(err) { console.error(err); showUploadMessage('엑셀 파일을 읽지 못했습니다.'); }
     });
 
-    function markByBarcode(scannedValue = '') {
-      setDefaultDate();
-      const input = String(scannedValue || $('barcodeInput').value).trim();
-      if (!input) {
-        showScanMessage('바코드 또는 설비코드를 입력해 주세요.', 'text-red-700');
-        return false;
-      }
-      const item = facilities.find(x => String(x.barcode).toLowerCase() === input.toLowerCase());
-      if (!item) {
-        $('barcodeInput').value = input;
-        showScanMessage(`등록되지 않은 바코드입니다: ${input}`, 'text-red-700');
-        return false;
-      }
+    function markByBarcode(value = '') {
+      const code = String(value || $('barcodeInput').value).trim();
+      if (!code) { showScanMessage('바코드를 입력해 주세요.', 'text-red-700'); return false; }
+      const item = facilities.find(x => String(x.barcode).toLowerCase() === code.toLowerCase());
+      if (!item) { showScanMessage(`등록되지 않은 바코드입니다: ${code}`, 'text-red-700'); return false; }
       item.checked = true;
       item.checkedAt = new Date().toLocaleString('ko-KR');
       $('barcodeInput').value = '';
-      renderTable();
       saveLocal(true);
-      showScanMessage(`카메라 스캔으로 조사 완료 처리되었습니다: ${item.name} (${item.barcode})`, 'text-green-700');
-      if (!scannerRunning) $('barcodeInput').focus();
+      renderAll();
+      showScanMessage(`조사 완료 처리되었습니다: ${item.name} (${item.barcode})`, 'text-green-700');
       return true;
     }
 
+    $('barcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); markByBarcode(); } });
+    function toggleChecked(id, checked) { const item = facilities.find(x => x.id === id); if (!item) return; item.checked = checked; item.checkedAt = checked ? new Date().toLocaleString('ko-KR') : ''; saveLocal(true); renderAll(); }
+
     async function openCameraScanner() {
-      if (!facilities.length) {
-        showScanMessage('먼저 엑셀 업로드 또는 예시 데이터로 설비 리스트를 등록해 주세요.', 'text-red-700');
-        return;
-      }
-
+      if (!facilities.length) { showScanMessage('먼저 엑셀을 업로드해 주세요.', 'text-red-700'); return; }
       $('scannerPanel').classList.remove('hidden');
-      showScanMessage('카메라를 준비하고 있습니다. 브라우저에서 카메라 권한을 허용해 주세요.', 'text-blue-700');
-
-      if (!window.Html5Qrcode) {
-        showScanMessage('바코드 스캔 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.', 'text-red-700');
-        return;
-      }
-
       try {
         if (scannerRunning) return;
         html5QrCode = html5QrCode || new Html5Qrcode('reader');
-
-        await html5QrCode.start(
-          { facingMode: cameraFacingMode },
-          {
-            fps: 10,
-            qrbox: function(viewfinderWidth, viewfinderHeight) {
-              const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-              const boxSize = Math.floor(minEdge * 0.72);
-              return { width: boxSize, height: Math.floor(boxSize * 0.62) };
-            },
-            aspectRatio: 1.777,
-            disableFlip: false,
-            formatsToSupport: [
-              Html5QrcodeSupportedFormats.QR_CODE,
-              Html5QrcodeSupportedFormats.CODE_128,
-              Html5QrcodeSupportedFormats.CODE_39,
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.EAN_8,
-              Html5QrcodeSupportedFormats.UPC_A,
-              Html5QrcodeSupportedFormats.UPC_E,
-              Html5QrcodeSupportedFormats.ITF
-            ]
-          },
-          onCameraScanSuccess,
-          () => {}
-        );
+        await html5QrCode.start({ facingMode: cameraFacingMode }, { fps: 10, qrbox: { width: 260, height: 160 }, formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39, Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.EAN_8, Html5QrcodeSupportedFormats.UPC_A, Html5QrcodeSupportedFormats.UPC_E, Html5QrcodeSupportedFormats.ITF] }, decoded => {
+          const now = Date.now();
+          const code = String(decoded || '').trim();
+          if (!code || (code === lastScannedCode && now - lastScannedAt < 1800)) return;
+          lastScannedCode = code;
+          lastScannedAt = now;
+          $('barcodeInput').value = code;
+          const ok = markByBarcode(code);
+          if (navigator.vibrate) navigator.vibrate(ok ? 120 : [80, 60, 80]);
+        }, () => {});
         scannerRunning = true;
-        showScanMessage('카메라 스캔이 시작되었습니다. 바코드를 화면 중앙에 맞춰 주세요.', 'text-blue-700');
-      } catch (error) {
-        scannerRunning = false;
-        showScanMessage('카메라를 시작할 수 없습니다. HTTPS 접속 여부와 카메라 권한을 확인해 주세요.', 'text-red-700');
-        console.error(error);
-      }
+      } catch(err) { console.error(err); showScanMessage('카메라를 시작할 수 없습니다. HTTPS와 카메라 권한을 확인해 주세요.', 'text-red-700'); }
     }
+    async function stopCameraScanner() { try { if (html5QrCode && scannerRunning) { await html5QrCode.stop(); await html5QrCode.clear(); } } catch(e) {} scannerRunning = false; $('scannerPanel').classList.add('hidden'); }
+    async function switchCamera() { cameraFacingMode = cameraFacingMode === 'environment' ? 'user' : 'environment'; if (scannerRunning) { await stopCameraScanner(); setTimeout(openCameraScanner, 250); } }
 
-    function onCameraScanSuccess(decodedText) {
-      const code = String(decodedText || '').trim();
-      const now = Date.now();
-      if (!code) return;
-
-      // 같은 바코드가 연속으로 여러 번 인식되는 것을 방지합니다.
-      if (code === lastScannedCode && now - lastScannedAt < 1800) return;
-      lastScannedCode = code;
-      lastScannedAt = now;
-
-      $('barcodeInput').value = code;
-      const success = markByBarcode(code);
-      if (navigator.vibrate) navigator.vibrate(success ? 120 : [80, 60, 80]);
-    }
-
-    async function stopCameraScanner() {
-      try {
-        if (html5QrCode && scannerRunning) {
-          await html5QrCode.stop();
-          await html5QrCode.clear();
-        }
-      } catch (error) {
-        console.warn(error);
-      } finally {
-        scannerRunning = false;
-        $('scannerPanel').classList.add('hidden');
-        showScanMessage('카메라 스캔을 종료했습니다.', 'text-slate-700');
-      }
-    }
-
-    async function switchCamera() {
-      cameraFacingMode = cameraFacingMode === 'environment' ? 'user' : 'environment';
-      if (scannerRunning) {
-        await stopCameraScanner();
-        setTimeout(openCameraScanner, 250);
-      }
-    }
-
-    $('barcodeInput').addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        markByBarcode();
-      }
-    });
-
-    function toggleChecked(encodedId, checked) {
-      const id = decodeURIComponent(encodedId);
-      const item = facilities.find(x => x.id === id);
-      if (!item) return;
-      item.checked = checked;
-      item.checkedAt = checked ? new Date().toLocaleString('ko-KR') : '';
-      renderTable();
-      saveLocal(true);
-    }
-
-    function showScanMessage(message, className) {
-      $('scanMessage').className = `mt-3 text-sm font-bold ${className}`;
-      $('scanMessage').textContent = message;
-    }
-
-    function getFormData() {
-      return {
-        surveyTitle: $('surveyTitle').value,
-        surveyDate: $('surveyDate').value,
-        surveyRound: $('surveyRound').value,
-        manager: $('manager').value,
-        facilities
-      };
-    }
-
-    function setFormData(data) {
-      $('surveyTitle').value = data.surveyTitle || '';
-      $('surveyDate').value = data.surveyDate || todayString();
-      $('surveyRound').value = data.surveyRound || '';
-      $('manager').value = data.manager || '';
-      facilities = Array.isArray(data.facilities) ? [...data.facilities] : [];
-      $('searchInput').value = '';
-      $('statusFilter').value = 'all';
-      renderTable();
-      updateStats();
-    }
-
-    function saveLocal(silent = false) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
-      if (!silent) alert('현재 양식이 브라우저에 저장되었습니다.');
-    }
-
-    function loadLocal() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        alert('저장된 데이터가 없습니다.');
-        return;
-      }
-      setFormData(JSON.parse(raw));
-      alert('저장된 데이터를 불러왔습니다.');
-    }
-
-    function exportJson() {
-      const blob = new Blob([JSON.stringify(getFormData(), null, 2)], { type: 'application/json;charset=utf-8' });
-      saveAs(blob, `설비조사_${$('surveyDate').value || todayString()}_${$('surveyRound').value || '회차미입력'}.json`);
-    }
-
-    $('jsonImport').addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      const data = JSON.parse(await file.text());
-      setFormData(data);
-      saveLocal(true);
-    });
-
-    function exportExcel() {
-      const data = facilities.map((item, index) => ({
-        No: index + 1,
-        '재고조사명': $('surveyTitle').value,
-        '재고조사 날짜': $('surveyDate').value,
-        '회차': $('surveyRound').value,
-        '바코드/설비코드': item.barcode,
-        '설비명': item.name,
-        '위치': item.location,
-        '부서': item.department,
-        '관리자': item.manager,
-        '재고조사 여부': item.checked ? '조사 완료' : '미조사',
-        '조사 완료 일시': item.checkedAt || '',
-        '비고': item.note || ''
-      }));
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, '설비조사결과');
-      XLSX.writeFile(wb, `설비조사결과_${$('surveyDate').value || todayString()}.xlsx`);
-    }
-
-    function downloadTemplate() {
-      const rows = [
-        { '설비코드': 'FAC-00001', '설비명': '컴프레서 A-01', '위치': '1공장 기계실', '부서': '생산1팀', '관리자': '김관리', '비고': '' },
-        { '설비코드': 'FAC-00002', '설비명': '냉각수 펌프 P-02', '위치': '2공장 유틸리티실', '부서': '설비보전팀', '관리자': '이보전', '비고': '' }
-      ];
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, '설비리스트');
-      XLSX.writeFile(wb, '설비리스트_업로드양식.xlsx');
-    }
-
-    function savePdf() {
-      const opt = {
-        margin: 8,
-        filename: `설비조사양식_${$('surveyDate').value || todayString()}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-      };
-      html2pdf().set(opt).from($('printArea')).save();
-    }
-
-    function clearAllData() {
-      if (!confirm('모든 설비 및 조사 데이터를 삭제하시겠습니까?')) return;
-      facilities = [];
-      localStorage.removeItem(STORAGE_KEY);
-      $('searchInput').value = '';
-      $('statusFilter').value = 'all';
-      const debugBox = $('debugInfo');
-      if (debugBox) debugBox.classList.add('hidden');
-      renderTable();
-      updateStats();
-      showScanMessage('데이터가 초기화되었습니다.', 'text-slate-700');
-    }
-
-    function loadSampleData() {
-      facilities = [
-        buildFacility({ '설비코드': 'FAC-00001', '설비명': '컴프레서 A-01', '위치': '1공장 기계실', '부서': '생산1팀', '관리자': '김관리' }, 0),
-        buildFacility({ '설비코드': 'FAC-00002', '설비명': '냉각수 펌프 P-02', '위치': '2공장 유틸리티실', '부서': '설비보전팀', '관리자': '이보전' }, 1),
-        buildFacility({ '설비코드': 'FAC-00003', '설비명': '컨베이어 CV-03', '위치': '포장라인', '부서': '물류팀', '관리자': '박물류' }, 2),
-        buildFacility({ '설비코드': 'FAC-00004', '설비명': '전기 판넬 EP-04', '위치': '전기실', '부서': '공무팀', '관리자': '최공무' }, 3)
-      ];
-      if (!$('surveyTitle').value) $('surveyTitle').value = '정기 설비 재고조사';
-      if (!$('surveyRound').value) $('surveyRound').value = '1';
-      setDefaultDate();
-      renderTable();
-      saveLocal(true);
-    }
-
-    ['surveyTitle', 'surveyDate', 'surveyRound', 'manager'].forEach(id => {
-      $(id).addEventListener('input', () => saveLocal(true));
-    });
-
-    $('searchInput').addEventListener('input', renderTable);
-    $('statusFilter').addEventListener('change', renderTable);
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Tab') {
-        const active = document.activeElement;
-        if (active && active.dataset && active.dataset.sample && !active.value) {
-          event.preventDefault();
-          active.value = active.dataset.sample;
-          active.dispatchEvent(new Event('input'));
-        }
-      }
-    });
-
-    window.addEventListener('beforeunload', () => {
-      if (scannerRunning && html5QrCode) {
-        try { html5QrCode.stop(); } catch (e) {}
-      }
-    });
-
-    window.addEventListener('load', () => {
-      setDefaultDate();
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        try { setFormData(JSON.parse(raw)); } catch (e) { renderTable(); }
-      } else {
-        renderTable();
-      }
-    });
+    function getFormData() { return { surveyTitle: $('surveyTitle').value, surveyDate: $('surveyDate').value, surveyRound: $('surveyRound').value, manager: $('manager').value, facilities }; }
+    function setFormData(data) { $('surveyTitle').value = data.surveyTitle || ''; $('surveyDate').value = data.surveyDate || todayString(); $('surveyRound').value = data.surveyRound || ''; $('manager').value = data.manager || ''; facilities = Array.isArray(data.facilities) ? data.facilities : []; renderAll(); }
+    function saveLocal(silent = false) { localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData())); if (!silent) alert('저장되었습니다.'); }
+    function loadLocal() { const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return alert('저장된 데이터가 없습니다.'); setFormData(JSON.parse(raw)); }
+    function clearAllData() { if (!confirm('모든 데이터를 삭제하시겠습니까?')) return; facilities = []; localStorage.removeItem(STORAGE_KEY); $('uploadMessage').textContent = ''; $('debugInfo').classList.add('hidden'); renderAll(); }
+    function exportJson() { saveAs(new Blob([JSON.stringify(getFormData(), null, 2)], { type: 'application/json;charset=utf-8' }), `설비조사_${$('surveyDate').value || todayString()}.json`); }
+    $('jsonImport').addEventListener('change', async e => { const file = e.target.files[0]; if (!file) return; setFormData(JSON.parse(await file.text())); saveLocal(true); });
+    function exportExcel() { const data = facilities.map((x, i) => ({ No: i + 1, '재고조사명': $('surveyTitle').value, '재고조사 날짜': $('surveyDate').value, '회차': $('surveyRound').value, '바코드/설비코드': x.barcode, '설비명': x.name, '위치': x.location, '부서': x.department, '관리자': x.manager, '재고조사 여부': x.checked ? '조사 완료' : '미조사', '조사 완료 일시': x.checkedAt, '비고': x.note })); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, '설비조사결과'); XLSX.writeFile(wb, `설비조사결과_${todayString()}.xlsx`); }
+    function downloadTemplate() { const rows = [{ '설비코드': 'FAC-00001', '설비명': '컴프레서 A-01', '위치': '1공장 기계실', '부서': '생산1팀', '관리자': '김관리', '비고': '정기 점검 대상' }, { '설비코드': 'FAC-00002', '설비명': '냉각수 펌프 P-02', '위치': '2공장 유틸리티실', '부서': '설비보전팀', '관리자': '이보전', '비고': '예비 부품 확인 필요' }]; const ws = XLSX.utils.json_to_sheet(rows); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Sheet1'); XLSX.writeFile(wb, '설비리스트_업로드양식.xlsx'); }
+    function loadSampleData() { const rows = [['FAC-00001', '컴프레서 A-01', '1공장 기계실', '생산1팀', '김관리', '정기 점검 대상'], ['FAC-00002', '냉각수 펌프 P-02', '2공장 유틸리티실', '설비보전팀', '이보전', '예비 부품 확인 필요'], ['FAC-00003', '컨베이어 CV-03', '포장라인', '물류팀', '박물류', '벨트 상태 확인'], ['FAC-00004', '전기 판넬 EP-04', '전기실', '공무팀', '최공무', '잠금장치 확인']]; setFacilities(rows.map(r => ({ barcode: r[0], name: r[1], location: r[2], department: r[3], manager: r[4], note: r[5] })), '예시 데이터 4건이 등록되었습니다.'); }
+    function savePdf() { html2pdf().set({ margin: 8, filename: `설비조사양식_${todayString()}.pdf`, image: { type: 'jpeg', quality: .98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } }).from($('printArea')).save(); }
+    ['surveyTitle', 'surveyDate', 'surveyRound', 'manager'].forEach(id => $(id).addEventListener('input', () => saveLocal(true)));
+    $('searchInput').addEventListener('input', renderAll);
+    $('statusFilter').addEventListener('change', renderAll);
+    window.addEventListener('load', () => { $('surveyDate').value = $('surveyDate').value || todayString(); const raw = localStorage.getItem(STORAGE_KEY); if (raw) { try { setFormData(JSON.parse(raw)); } catch(e) { renderAll(); } } else renderAll(); });
   </script>
 </body>
 </html>
