@@ -93,7 +93,165 @@
     .badge-wait { background: #fef3c7; color: #92400e; }
     .badge-missing { background: #fee2e2; color: #991b1b; }
 
-    .table-wrap { overflow-x: auto; border-radius: 1rem; border: 1px solid #e2e8f0; }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      -webkit-overflow-scrolling: touch;
+      background: white;
+    }
+
+    .mobile-card-list { display: none; }
+
+    #facilityTable {
+      min-width: 980px;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: auto;
+    }
+
+    #facilityTable th,
+    #facilityTable td {
+      white-space: nowrap;
+      word-break: keep-all;
+    }
+
+    #facilityTable th:nth-child(1),
+    #facilityTable td:nth-child(1) { min-width: 54px; }
+    #facilityTable th:nth-child(2),
+    #facilityTable td:nth-child(2) { min-width: 150px; }
+    #facilityTable th:nth-child(3),
+    #facilityTable td:nth-child(3) { min-width: 180px; }
+    #facilityTable th:nth-child(4),
+    #facilityTable td:nth-child(4) { min-width: 160px; }
+    #facilityTable th:nth-child(5),
+    #facilityTable td:nth-child(5) { min-width: 120px; }
+    #facilityTable th:nth-child(6),
+    #facilityTable td:nth-child(6) { min-width: 120px; }
+    #facilityTable th:nth-child(7),
+    #facilityTable td:nth-child(7) { min-width: 160px; }
+    #facilityTable th:nth-child(8),
+    #facilityTable td:nth-child(8) { min-width: 120px; }
+
+    .facility-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #ffffff;
+      padding: 1rem;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    .facility-card.done {
+      border-color: #86efac;
+      background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 70%);
+    }
+
+    .facility-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .facility-card-title {
+      font-size: 1rem;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1.35;
+    }
+
+    .facility-card-code {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+      padding: 0.28rem 0.55rem;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 0.78rem;
+      font-weight: 900;
+      word-break: break-all;
+    }
+
+    .facility-card-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+      margin: 0.8rem 0;
+    }
+
+    .facility-card-row {
+      display: grid;
+      grid-template-columns: 4.7rem 1fr;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .facility-card-label {
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .facility-card-value {
+      color: #1e293b;
+      font-weight: 650;
+      word-break: break-word;
+    }
+
+    .mobile-action-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      main { padding: 0.75rem !important; }
+      .header-bg { border-radius: 1rem; padding: 1.2rem; }
+      .header-bg h1 { font-size: 1.6rem; }
+      .material-section { padding: 1rem; border-radius: 1rem; }
+      .section-heading { font-size: 1rem; }
+      .btn { width: 100%; padding: 0.78rem 0.85rem; }
+      .input-field { font-size: 16px; }
+      .badge { font-size: 0.72rem; padding: 0.25rem 0.5rem; }
+
+      .table-wrap {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-radius: 0.85rem;
+        box-shadow: inset -14px 0 18px -18px rgba(15, 23, 42, 0.35);
+      }
+
+      .mobile-card-list { display: none !important; }
+      #facilityTable { display: table; min-width: 1040px; font-size: 0.76rem; }
+      #facilityTable th, #facilityTable td { padding: 0.62rem 0.7rem; line-height: 1.35; }
+      #facilityTable td:nth-child(3),
+      #facilityTable td:nth-child(4),
+      #facilityTable td:nth-child(5),
+      #facilityTable td:nth-child(6) {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      #facilityTable th:nth-child(1),
+      #facilityTable td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        background: #ffffff;
+      }
+
+      #facilityTable th:nth-child(1) {
+        background: #f1f5f9;
+        z-index: 3;
+      }
+    }
     th { background: #f1f5f9; color: #334155; font-weight: 800; }
     th, td { padding: 0.75rem 0.85rem; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
     tbody tr:hover { background: #f8fafc; }
@@ -295,6 +453,8 @@
           <button class="btn btn-primary" onclick="exportExcel()"><i class="fa-solid fa-table"></i> 결과 엑셀</button>
         </div>
       </div>
+      <div id="facilityMobileCards" class="mobile-card-list"></div>
+      <p class="no-print text-xs text-blue-700 font-bold mb-2 md:hidden"><i class="fa-solid fa-arrows-left-right"></i> 핸드폰에서는 표를 좌우로 밀어서 전체 항목을 확인해 주세요.</p>
       <div class="table-wrap">
         <table id="facilityTable" class="min-w-full text-sm bg-white">
           <thead>
@@ -314,7 +474,7 @@
           </tbody>
         </table>
       </div>
-      <p class="mt-3 text-xs text-slate-500">출력 시 조사 날짜, 회차, 설비별 재고조사 여부가 함께 표시됩니다.</p>
+      <p class="mt-3 text-xs text-slate-500">PC와 핸드폰 모두 표 형식으로 표시됩니다. 핸드폰에서는 좌우 스크롤로 바코드, 설비명, 위치, 부서, 조사 여부를 확인하실 수 있습니다.</p>
     </section>
   </main>
 
@@ -340,6 +500,45 @@
         if (found && row[found] !== undefined && row[found] !== null) return String(row[found]).trim();
       }
       return '';
+    }
+
+    function parseExcelRows(sheet) {
+      const matrix = XLSX.utils.sheet_to_json(sheet, {
+        header: 1,
+        defval: '',
+        blankrows: false,
+        raw: false
+      });
+
+      const nonEmptyRows = matrix.filter(row =>
+        Array.isArray(row) && row.some(cell => String(cell ?? '').trim() !== '')
+      );
+
+      if (!nonEmptyRows.length) return [];
+
+      const headerIndex = nonEmptyRows.findIndex(row =>
+        row.some(cell => ['설비명', '장비명', '자산명', '설비코드', '설비번호', '바코드', '자산번호'].some(key =>
+          normalizeHeader(cell).includes(normalizeHeader(key))
+        ))
+      );
+
+      const headers = (headerIndex >= 0 ? nonEmptyRows[headerIndex] : nonEmptyRows[0]).map((cell, index) => {
+        const text = String(cell ?? '').trim();
+        return text || `컬럼${index + 1}`;
+      });
+
+      const dataStartIndex = headerIndex >= 0 ? headerIndex + 1 : 1;
+      const dataRows = nonEmptyRows.slice(dataStartIndex);
+
+      return dataRows
+        .map(row => {
+          const obj = {};
+          headers.forEach((header, index) => {
+            obj[header] = row[index] !== undefined && row[index] !== null ? String(row[index]).trim() : '';
+          });
+          return obj;
+        })
+        .filter(row => Object.values(row).some(value => String(value ?? '').trim() !== ''));
     }
 
     function makeBarcode(index, code) {
@@ -369,6 +568,7 @@
 
       if (!rows.length) {
         $('facilityBody').innerHTML = '<tr><td colspan="8" class="text-center text-slate-500 py-8">표시할 설비가 없습니다.</td></tr>';
+        $('facilityMobileCards').innerHTML = '<div class="facility-card text-center text-slate-500">표시할 설비가 없습니다.</div>';
         updateStats();
         return;
       }
@@ -394,6 +594,33 @@
           </td>
         </tr>
       `).join('');
+
+      $('facilityMobileCards').innerHTML = rows.map((item, idx) => `
+        <article class="facility-card ${item.checked ? 'done' : ''}">
+          <div class="facility-card-header">
+            <div>
+              <div class="text-xs font-black text-slate-400">No. ${idx + 1}</div>
+              <div class="facility-card-title">${escapeHtml(item.name || '-')}</div>
+              <div class="facility-card-code"><i class="fa-solid fa-barcode"></i>${escapeHtml(item.barcode)}</div>
+            </div>
+            <div>
+              ${item.checked
+                ? `<span class="badge badge-done"><i class="fa-solid fa-circle-check"></i> 완료</span>`
+                : `<span class="badge badge-wait"><i class="fa-solid fa-clock"></i> 미조사</span>`}
+            </div>
+          </div>
+          <div class="facility-card-grid">
+            <div class="facility-card-row"><div class="facility-card-label">위치</div><div class="facility-card-value">${escapeHtml(item.location || '-')}</div></div>
+            <div class="facility-card-row"><div class="facility-card-label">부서</div><div class="facility-card-value">${escapeHtml(item.department || '-')}</div></div>
+            <div class="facility-card-row"><div class="facility-card-label">관리자</div><div class="facility-card-value">${escapeHtml(item.manager || '-')}</div></div>
+            <div class="facility-card-row"><div class="facility-card-label">완료일시</div><div class="facility-card-value">${escapeHtml(item.checkedAt || '-')}</div></div>
+          </div>
+          <div class="mobile-action-bar no-print">
+            <button class="btn btn-success !py-2 text-sm" onclick="toggleChecked('${encodeURIComponent(item.id)}', true)"><i class="fa-solid fa-check"></i> 완료 처리</button>
+            <button class="btn btn-danger !py-2 text-sm" onclick="toggleChecked('${encodeURIComponent(item.id)}', false)"><i class="fa-solid fa-rotate-left"></i> 해제</button>
+          </div>
+        </article>
+      `).join('');
       updateStats();
     }
 
@@ -417,16 +644,16 @@
     }
 
     function buildFacility(row, index) {
-      const code = pickValue(row, ['설비코드', '설비번호', '바코드', '자산번호', 'code', 'barcode']);
+      const code = pickValue(row, ['설비코드', '설비번호', '바코드', '자산번호', 'code', 'barcode', 'asset']);
       const barcode = makeBarcode(index, code);
       return {
         id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
         barcode,
-        name: pickValue(row, ['설비명', '장비명', '자산명', 'name']) || `설비 ${index + 1}`,
-        location: pickValue(row, ['위치', '설치위치', 'location']),
-        department: pickValue(row, ['부서', '담당부서', 'department']),
-        manager: pickValue(row, ['관리자', '담당자', 'manager']),
-        note: pickValue(row, ['비고', '메모', 'note']),
+        name: pickValue(row, ['설비명', '장비명', '자산명', '품명', 'name', 'facility', 'equipment']) || `설비 ${index + 1}`,
+        location: pickValue(row, ['위치', '설치위치', '장소', 'location', 'place']),
+        department: pickValue(row, ['부서', '담당부서', '사용부서', 'department', 'team']),
+        manager: pickValue(row, ['관리자', '담당자', '책임자', 'manager', 'owner']),
+        note: pickValue(row, ['비고', '메모', '특이사항', 'note', 'remark']),
         checked: false,
         checkedAt: ''
       };
@@ -448,13 +675,19 @@
 
       try {
         const data = await file.arrayBuffer();
-        const workbook = XLSX.read(data, { type: 'array' });
+        const workbook = XLSX.read(data, { type: 'array', cellDates: true });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        const rows = parseExcelRows(sheet);
+
+        if (!rows.length) {
+          showScanMessage('엑셀에서 등록 가능한 데이터 행을 찾지 못했습니다. 첫 행에 설비명, 설비코드 등의 제목이 있는지 확인해 주세요.', 'text-red-700');
+          return;
+        }
+
         facilities = rows.map(buildFacility);
         renderTable();
         saveLocal(true);
-        showScanMessage(`${facilities.length}건의 설비 리스트가 등록되었습니다.`, 'text-blue-700');
+        showScanMessage(`${facilities.length}건의 설비 리스트가 모두 등록되었습니다.`, 'text-blue-700');
       } catch (error) {
         console.error(error);
         showScanMessage('엑셀 파일을 읽지 못했습니다. 파일이 손상되었거나 지원하지 않는 형식일 수 있습니다.', 'text-red-700');
