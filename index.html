@@ -418,13 +418,14 @@
             엑셀 첫 행에는 <b>설비명</b>, <b>설비코드</b>, <b>위치</b>, <b>부서</b>, <b>관리자</b>, <b>비고</b> 중 가능한 항목명을 넣어 주세요. 설비코드가 없으면 자동으로 바코드 번호가 부여됩니다.
           </p>
           <input id="excelFile" type="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,application/octet-stream" class="input-field bg-white" />
+          <button class="btn btn-primary mt-2" onclick="processSelectedExcelFile()"><i class="fa-solid fa-file-arrow-up"></i> 선택한 엑셀 등록 실행</button>
           <p class="text-xs text-slate-500 mt-2">
             핸드폰에서 파일이 보이지 않으면 엑셀 파일을 먼저 <b>내 파일/다운로드/iCloud Drive</b>에 저장한 뒤 선택해 주세요. 일부 모바일 브라우저에서는 파일 형식 필터 때문에 엑셀 파일이 숨겨질 수 있습니다.
           </p>
         </div>
         <div class="flex flex-wrap gap-2">
           <button class="btn btn-primary" onclick="downloadTemplate()"><i class="fa-solid fa-download"></i> 엑셀 양식 받기</button>
-          <button class="btn btn-soft" onclick="loadSampleData()"><i class="fa-solid fa-wand-magic-sparkles"></i> 예시 데이터</button>
+          <button class="btn btn-soft" onclick="loadSampleData()"><i class="fa-solid fa-wand-magic-sparkles"></i> 예시 4건 보기</button>
           <button class="btn btn-danger" onclick="clearAllData()"><i class="fa-solid fa-trash"></i> 전체 초기화</button>
         </div>
       </div>
@@ -532,6 +533,7 @@
   <script>
     const STORAGE_KEY = 'facilityInventorySurvey.v20260131';
     let facilities = [];
+    let selectedExcelFile = null;
     let html5QrCode = null;
     let scannerRunning = false;
     let cameraFacingMode = 'environment';
@@ -882,9 +884,6 @@
     }
 
     $('excelFile').addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) {
-        showScanMessage('파일이 선택되지 않았습니다. 핸드폰의 내 파일/다운로드 폴더에 엑셀$('excelFile').addEventListener('change', async (event) => {
       selectedExcelFile = event.target.files[0] || null;
       if (!selectedExcelFile) {
         showScanMessage('파일이 선택되지 않았습니다. 핸드폰의 내 파일/다운로드 폴더에 엑셀 파일을 저장한 뒤 다시 선택해 주세요.', 'text-red-700');
@@ -943,7 +942,11 @@
       }
     }
 
-    function markByBarcode주세요.', 'text-red-700');
+    function markByBarcode(scannedValue = '') {
+      setDefaultDate();
+      const input = String(scannedValue || $('barcodeInput').value).trim();
+      if (!input) {
+        showScanMessage('바코드 또는 설비코드를 입력해 주세요.', 'text-red-700');
         return false;
       }
       const item = facilities.find(x => String(x.barcode).toLowerCase() === input.toLowerCase());
@@ -1181,14 +1184,13 @@
     }
 
     function loadSampleData() {
-      facilities = [
-        buildFacility({ '설비코드': 'FAC-00001', '설비명': '컴프레서 A-01', '위치': '1공장 기계실', '부서': '생산1팀', '관리자': '김관리' }, 0),
-        buildFacilifunction loadSampleData() {
       if ($('excelFile').files && $('excelFile').files[0]) {
         const useSample = confirm('현재 엑셀 파일이 선택되어 있습니다. 예시 4건을 불러오면 엑셀 데이터가 샘플 데이터로 바뀝니다. 그래도 예시 데이터를 불러오시겠습니까?');
         if (!useSample) return;
       }
-      facilities = ['위치': '2공장 유틸리티실', '부서': '설비보전팀', '관리자': '이보전' }, 1),
+      facilities = [
+        buildFacility({ '설비코드': 'FAC-00001', '설비명': '컴프레서 A-01', '위치': '1공장 기계실', '부서': '생산1팀', '관리자': '김관리' }, 0),
+        buildFacility({ '설비코드': 'FAC-00002', '설비명': '냉각수 펌프 P-02', '위치': '2공장 유틸리티실', '부서': '설비보전팀', '관리자': '이보전' }, 1),
         buildFacility({ '설비코드': 'FAC-00003', '설비명': '컨베이어 CV-03', '위치': '포장라인', '부서': '물류팀', '관리자': '박물류' }, 2),
         buildFacility({ '설비코드': 'FAC-00004', '설비명': '전기 판넬 EP-04', '위치': '전기실', '부서': '공무팀', '관리자': '최공무' }, 3)
       ];
