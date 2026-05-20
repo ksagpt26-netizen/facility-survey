@@ -591,6 +591,7 @@
     function renderTable() {
       const keyword = $('searchInput').value.trim().toLowerCase();
       const filter = $('statusFilter').value;
+
       const rows = facilities.filter(item => {
         const haystack = [item.barcode, item.name, item.location, item.department, item.manager, item.note].join(' ').toLowerCase();
         const keywordOk = !keyword || haystack.includes(keyword);
@@ -600,7 +601,8 @@
 
       if (!rows.length) {
         $('facilityBody').innerHTML = '<tr><td colspan="8" class="text-center text-slate-500 py-8">표시할 설비가 없습니다.</td></tr>';
-        $('facilityMobileCards').innerHTML = '<div class="facility-card text-center text-slate-500">표시할 설비가 없습니다.</div>';
+        const mobileCards = $('facilityMobileCards');
+        if (mobileCards) mobileCards.innerHTML = '';
         updateStats();
         return;
       }
@@ -609,10 +611,10 @@
         <tr class="${item.checked ? 'bg-green-50/40' : ''}">
           <td>${idx + 1}</td>
           <td><span class="font-black tracking-wide">${escapeHtml(item.barcode)}</span></td>
-          <td class="font-bold">${escapeHtml(item.name || '-')}</td>
-          <td>${escapeHtml(item.location || '-')}</td>
-          <td>${escapeHtml(item.department || '-')}</td>
-          <td>${escapeHtml(item.manager || '-')}</td>
+          <td class="font-bold" title="${escapeHtml(item.name || '-')}">${escapeHtml(item.name || '-')}</td>
+          <td title="${escapeHtml(item.location || '-')}">${escapeHtml(item.location || '-')}</td>
+          <td title="${escapeHtml(item.department || '-')}">${escapeHtml(item.department || '-')}</td>
+          <td title="${escapeHtml(item.manager || '-')}">${escapeHtml(item.manager || '-')}</td>
           <td>
             ${item.checked
               ? `<span class="badge badge-done"><i class="fa-solid fa-circle-check"></i> 조사 완료</span><div class="text-xs text-slate-500 mt-1">${escapeHtml(item.checkedAt || '')}</div>`
@@ -627,33 +629,19 @@
         </tr>
       `).join('');
 
-      $('facilityMobileCards').innerHTML = rows.map((item, idx) => `
-        <article class="facility-card ${item.checked ? 'done' : ''}">
-          <div class="facility-card-header">
-            <div>
-              <div class="text-xs font-black text-slate-400">No. ${idx + 1}</div>
-              <div class="facility-card-title">${escapeHtml(item.name || '-')}</div>
-              <div class="facility-card-code"><i class="fa-solid fa-barcode"></i>${escapeHtml(item.barcode)}</div>
-            </div>
-            <div>
-              ${item.checked
-                ? `<span class="badge badge-done"><i class="fa-solid fa-circle-check"></i> 완료</span>`
-                : `<span class="badge badge-wait"><i class="fa-solid fa-clock"></i> 미조사</span>`}
-            </div>
-          </div>
-          <div class="facility-card-grid">
-            <div class="facility-card-row"><div class="facility-card-label">위치</div><div class="facility-card-value">${escapeHtml(item.location || '-')}</div></div>
-            <div class="facility-card-row"><div class="facility-card-label">부서</div><div class="facility-card-value">${escapeHtml(item.department || '-')}</div></div>
-            <div class="facility-card-row"><div class="facility-card-label">관리자</div><div class="facility-card-value">${escapeHtml(item.manager || '-')}</div></div>
-            <div class="facility-card-row"><div class="facility-card-label">완료일시</div><div class="facility-card-value">${escapeHtml(item.checkedAt || '-')}</div></div>
-          </div>
-          <div class="mobile-action-bar no-print">
-            <button class="btn btn-success !py-2 text-sm" onclick="toggleChecked('${encodeURIComponent(item.id)}', true)"><i class="fa-solid fa-check"></i> 완료 처리</button>
-            <button class="btn btn-danger !py-2 text-sm" onclick="toggleChecked('${encodeURIComponent(item.id)}', false)"><i class="fa-solid fa-rotate-left"></i> 해제</button>
-          </div>
-        </article>
-      `).join('');
+      const mobileCards = $('facilityMobileCards');
+      if (mobileCards) mobileCards.innerHTML = '';
       updateStats();
+    }
+
+    function replaceFacilities(newFacilities, message = '') {
+      facilities = Array.isArray(newFacilities) ? [...newFacilities] : [];
+      $('searchInput').value = '';
+      $('statusFilter').value = 'all';
+      renderTable();
+      saveLocal(true);
+      updateStats();
+      if (message) showScanMessage(message, 'text-blue-700');
     }
 
     function updateStats() {
@@ -716,12 +704,10 @@
           return;
         }
 
-        facilities = rows.map(buildFacility);
-        $('searchInput').value = '';
-        $('statusFilter').value = 'all';
-        renderTable();
-        saveLocal(true);
-        showScanMessage(`${parsed.sheetName} 시트에서 ${facilities.length}건의 설비 리스트가 모두 등록되었습니다.`, 'text-blue-700');
+        replaceFacilities(
+          rows.map(buildFacility),
+          `${parsed.sheetName} 시트에서 ${rows.length}건의 설비 리스트가 모두 등록되었습니다.`
+        );
       } catch (error) {
         console.error(error);
         showScanMessage('엑셀 파일을 읽지 못했습니다. 파일이 손상되었거나 지원하지 않는 형식일 수 있습니다.', 'text-red-700');
@@ -878,8 +864,11 @@
       $('surveyDate').value = data.surveyDate || todayString();
       $('surveyRound').value = data.surveyRound || '';
       $('manager').value = data.manager || '';
-      facilities = Array.isArray(data.facilities) ? data.facilities : [];
+      facilities = Array.isArray(data.facilities) ? [...data.facilities] : [];
+      $('searchInput').value = '';
+      $('statusFilter').value = 'all';
       renderTable();
+      updateStats();
     }
 
     function saveLocal(silent = false) {
