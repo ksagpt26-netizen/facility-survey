@@ -301,6 +301,50 @@
       padding: 0.75rem 1rem;
       font-size: 0.9rem;
     }
+  
+    /* 모바일 표시 보정: 데이터는 10건인데 화면에서 4건까지만 보이는 현상 방지 */
+    .table-wrap {
+      height: auto !important;
+      max-height: none !important;
+      overflow-x: auto !important;
+      overflow-y: visible !important;
+    }
+
+    #facilityTable,
+    #facilityTable tbody,
+    #facilityTable tr {
+      height: auto !important;
+      max-height: none !important;
+    }
+
+    #facilityTable tbody tr,
+    #facilityTable tbody tr:nth-child(n+5) {
+      display: table-row !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    @media (max-width: 768px) {
+      .table-wrap {
+        height: auto !important;
+        max-height: none !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+      }
+
+      #facilityTable {
+        min-width: 1040px !important;
+        height: auto !important;
+        max-height: none !important;
+      }
+
+      #facilityBody tr {
+        display: table-row !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -700,20 +744,74 @@
       const remain = total - done;
       const rate = total ? Math.round((done / total) * 100) : 0;
 
-      ['statTotal', 'summaryTotal'].forEach(id => { if ($(id)) $(id).textContent = total; });
-      ['statDone', 'summaryDone'].forEach(id => { if ($(id)) $(id).textContent = done; });
-      ['statRemain', 'summaryRemain'].forEach(id => { if ($(id)) $(id).textContent = remain; });
-      ['statRate', 'summaryRate'].forEach(id => { if ($(id)) $(id).textContent = rate + '%'; });
+      setStatText('#statTotal, #summaryTotal, [data-stat="total"]', total);
+      setStatText('#statDone, #summaryDone, [data-stat="done"]', done);
+      setStatText('#statRemain, #summaryRemain, [data-stat="remain"]', remain);
+      setStatText('#statRate, #summaryRate, [data-stat="rate"]', rate + '%');
+
       if ($('progressBar')) $('progressBar').style.width = rate + '%';
+      syncVisibleSummaryCards(total, done, remain, rate);
+    }
+
+    function setStatText(selector, value) {
+      document.querySelectorAll(selector).forEach(el => {
+        el.textContent = value;
+      });
+    }
+
+    function syncVisibleSummaryCards(total, done, remain, rate) {
+      document.querySelectorAll('.material-section').forEach(section => {
+        const title = section.textContent || '';
+        if (!title.includes('조사 현황 요약')) return;
+
+        const cards = Array.from(section.querySelectorAll('div')).filter(div => {
+          const text = div.textContent || '';
+          return text.includes('전체') || text.includes('조사 완료') || text.includes('미조사') || text.includes('완료율');
+        });
+
+        cards.forEach(card => {
+          const text = card.textContent || '';
+          const numberEl = Array.from(card.querySelectorAll('div, span, b')).find(el => /^\d+%?$/.test((el.textContent || '').trim()));
+          if (!numberEl) return;
+          if (text.includes('완료율')) numberEl.textContent = rate + '%';
+          else if (text.includes('조사 완료')) numberEl.textContent = done;
+          else if (text.includes('미조사')) numberEl.textContent = remain;
+          else if (text.includes('전체')) numberEl.textContent = total;
+        });
+      });
     }
 
     function forceRefreshAll() {
       renderTable();
       updateStats();
+      revealAllRenderedRows();
       setTimeout(() => {
         renderTable();
         updateStats();
+        revealAllRenderedRows();
       }, 50);
+      setTimeout(() => {
+        updateStats();
+        revealAllRenderedRows();
+      }, 250);
+    }
+
+    function revealAllRenderedRows() {
+      document.querySelectorAll('#facilityBody tr').forEach(row => {
+        row.style.display = 'table-row';
+        row.style.visibility = 'visible';
+        row.style.opacity = '1';
+        row.style.height = 'auto';
+        row.style.maxHeight = 'none';
+      });
+
+      const wrap = document.querySelector('.table-wrap');
+      if (wrap) {
+        wrap.style.height = 'auto';
+        wrap.style.maxHeight = 'none';
+        wrap.style.overflowX = 'auto';
+        wrap.style.overflowY = 'visible';
+      }
     }
 
     function escapeHtml(value) {
