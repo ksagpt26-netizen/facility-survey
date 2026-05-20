@@ -209,7 +209,10 @@
           <p class="text-sm text-slate-600 mb-2">
             엑셀 첫 행에는 <b>설비명</b>, <b>설비코드</b>, <b>위치</b>, <b>부서</b>, <b>관리자</b>, <b>비고</b> 중 가능한 항목명을 넣어 주세요. 설비코드가 없으면 자동으로 바코드 번호가 부여됩니다.
           </p>
-          <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" class="input-field bg-white" />
+          <input id="excelFile" type="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,application/octet-stream" class="input-field bg-white" />
+          <p class="text-xs text-slate-500 mt-2">
+            핸드폰에서 파일이 보이지 않으면 엑셀 파일을 먼저 <b>내 파일/다운로드/iCloud Drive</b>에 저장한 뒤 선택해 주세요. 일부 모바일 브라우저에서는 파일 형식 필터 때문에 엑셀 파일이 숨겨질 수 있습니다.
+          </p>
         </div>
         <div class="flex flex-wrap gap-2">
           <button class="btn btn-primary" onclick="downloadTemplate()"><i class="fa-solid fa-download"></i> 엑셀 양식 받기</button>
@@ -431,15 +434,31 @@
 
     $('excelFile').addEventListener('change', async (event) => {
       const file = event.target.files[0];
-      if (!file) return;
-      const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data);
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-      facilities = rows.map(buildFacility);
-      renderTable();
-      saveLocal(true);
-      showScanMessage(`${facilities.length}건의 설비 리스트가 등록되었습니다.`, 'text-blue-700');
+      if (!file) {
+        showScanMessage('파일이 선택되지 않았습니다. 핸드폰의 내 파일/다운로드 폴더에 엑셀 파일을 저장한 뒤 다시 선택해 주세요.', 'text-red-700');
+        return;
+      }
+
+      const fileName = String(file.name || '').toLowerCase();
+      const allowed = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
+      if (!allowed) {
+        showScanMessage('엑셀(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드할 수 있습니다.', 'text-red-700');
+        return;
+      }
+
+      try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        facilities = rows.map(buildFacility);
+        renderTable();
+        saveLocal(true);
+        showScanMessage(`${facilities.length}건의 설비 리스트가 등록되었습니다.`, 'text-blue-700');
+      } catch (error) {
+        console.error(error);
+        showScanMessage('엑셀 파일을 읽지 못했습니다. 파일이 손상되었거나 지원하지 않는 형식일 수 있습니다.', 'text-red-700');
+      }
     });
 
     function markByBarcode(scannedValue = '') {
